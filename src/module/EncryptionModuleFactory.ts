@@ -4,7 +4,7 @@ import { IEcryptionKey } from "../key";
 import { IEncryptionModule } from "./IEncryptionModule";
 
 export class EncryptionModuleFactory {
-    static createModule(key: IEcryptionKey): IEncryptionModule {
+    public static createModule(key: IEcryptionKey): IEncryptionModule {
         switch(key.type) {
             case ModuleCryptoJsAES.TYPE:
                 return new ModuleCryptoJsAES(key.key);
