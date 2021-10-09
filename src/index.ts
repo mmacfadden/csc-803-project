@@ -1,10 +1,10 @@
 import { LocalStorage} from "node-localstorage"; 
 
-import { KeyManager } from "./core/KeyManager";
-import { IEcryptionKey } from "./core/IEncryptionKey";
-import { EncryptedStorage } from "./core/EncryptedStorage";
-import { CryptoJsAES } from "./modules/CryptoJsAES";
-import { EncryptionModuleFactory } from "./core/EncryptionModuleFactory";
+import { KeyManager } from "./key/KeyManager";
+import { IEcryptionKey } from "./key/";
+import { EncryptedStorage } from "./core/";
+import { ModuleCryptoJsAES } from "./module/";
+import { EncryptionModuleFactory } from "./module/";
 
 global.localStorage = new LocalStorage("./.localStorage/");
 
@@ -13,7 +13,7 @@ const keyManager = new KeyManager();
 const key: IEcryptionKey = {
     key: "Secret Symmetric Encryption Key",
     created: new Date(),
-    type: CryptoJsAES.TYPE
+    type: ModuleCryptoJsAES.TYPE
 }
 
 keyManager.setKey(key, "password");

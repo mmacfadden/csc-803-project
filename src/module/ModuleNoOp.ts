@@ -1,6 +1,6 @@
-import { IEncryptionModule } from "../core/IEncryptionModule";
+import { IEncryptionModule } from "./IEncryptionModule";
 
-export class NoOpModule implements IEncryptionModule {
+export class ModuleNoOp implements IEncryptionModule {
     static readonly TYPE = "NoOp";
 
     encrypt(clearText: string): string {

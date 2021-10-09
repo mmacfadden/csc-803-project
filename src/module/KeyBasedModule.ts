@@ -1,4 +1,4 @@
-import { IEncryptionModule } from "../core/IEncryptionModule";
+import { IEncryptionModule } from "./IEncryptionModule";
 
 export abstract class KeyBasedModule implements IEncryptionModule {
     protected _key: string;

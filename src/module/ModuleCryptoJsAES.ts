@@ -1,7 +1,7 @@
 import CryptoJS from "crypto-js";
 import { KeyBasedModule } from "./KeyBasedModule";
 
-export class CryptoJsAES extends KeyBasedModule {
+export class ModuleCryptoJsAES extends KeyBasedModule {
     static readonly TYPE = "CryptoJsAES";
     
     constructor(key: string) {

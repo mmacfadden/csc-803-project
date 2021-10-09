@@ -1,6 +1,6 @@
-import { StorageProxy } from "../src/core/StorageProxy";
+import { StorageProxy } from "./StorageProxy";
 
-export class MockStorage implements Storage {
+export class InMemoryStorage implements Storage {
     
     private _data: Map<string, string>;
     [name: string]: any;

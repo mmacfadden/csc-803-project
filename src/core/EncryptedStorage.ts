@@ -1,4 +1,4 @@
-import { IEncryptionModule } from "./IEncryptionModule";
+import { IEncryptionModule } from "../module/IEncryptionModule";
 import { StorageProxy } from "./StorageProxy";
 
 export class EncryptedStorage {
