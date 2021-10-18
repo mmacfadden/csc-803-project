@@ -5,13 +5,19 @@ import { IEcryptionKey } from "./IEncryptionKey";
 export class KeyManager {
     private static KEY_PROPERTY = "__master_key__";
 
+    private readonly _storage: Storage;
+
+    constructor(storage: Storage) {
+        this._storage = storage;
+    }
+
     public setPassword(oldPassword: string, newPasword: string): void {
         const key = this.getKey(oldPassword);
         this.setKey(key, newPasword);
     }
 
     public getKey(password: string): IEcryptionKey {
-        const encryptedKeyData = localStorage.getItem(KeyManager.KEY_PROPERTY);
+        const encryptedKeyData = this._storage.getItem(KeyManager.KEY_PROPERTY);
         if (!encryptedKeyData) {
             throw new Error("Encryption key is not set.");
         }
@@ -31,7 +37,7 @@ export class KeyManager {
         const keyData = JSON.stringify(converted, null, "");
         const derivedKey = KeyManager._derivedKey(password);
         const encryptedKeyData = CryptoJS.AES.encrypt(keyData, derivedKey).toString();
-        localStorage.setItem(KeyManager.KEY_PROPERTY, encryptedKeyData);
+        this._storage.setItem(KeyManager.KEY_PROPERTY, encryptedKeyData);
     }
 
     private static _derivedKey(password: string): string {

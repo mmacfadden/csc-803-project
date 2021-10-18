@@ -1,14 +1,11 @@
 import { LocalStorage} from "node-localstorage"; 
 
-import { KeyManager } from "../src/";
+import { LoadTester } from "../src/";
 import { IEcryptionKey } from "../src/";
-import { EncryptedStorage } from "../src/";
-import { ModuleCryptoJsAES } from "../src/";
-import { EncryptionModuleFactory } from "../src/";
+import { ModuleCryptoJsAES, ModuleNoOp } from "../src/";
 
-global.localStorage = new LocalStorage("./.localStorage/");
-
-const keyManager = new KeyManager();
+const storage = new LocalStorage("./.localStorage/");
+storage.clear();
 
 const key: IEcryptionKey = {
     key: "Secret Symmetric Encryption Key",
@@ -16,14 +13,5 @@ const key: IEcryptionKey = {
     type: ModuleCryptoJsAES.TYPE
 }
 
-keyManager.setKey(key, "password");
-
-const readKey = keyManager.getKey("password");
-
-console.log(readKey);
-
-const em = EncryptionModuleFactory.createModule(key);
-const encStorage = new EncryptedStorage(em, localStorage);
-
-encStorage.setItem("aKey", "value");
-console.log(encStorage.getItem("aKey"));
+const tester = new LoadTester(key, "password", storage);
+tester.loadTest(1000, 1000);
