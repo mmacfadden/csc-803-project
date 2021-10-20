@@ -1,48 +1,36 @@
-import * as pbkdf2 from "pbkdf2"; 
 import CryptoJS from 'crypto-js';
-import { IEcryptionKey } from "./IEncryptionKey";
+import {IEncryptionKey} from "./IEncryptionKey";
 
 export class KeyManager {
-    private static KEY_PROPERTY = "__master_key__";
+  private static KEY_PROPERTY = "__master_key__";
 
-    private readonly _storage: Storage;
+  private readonly _storage: Storage;
 
-    constructor(storage: Storage) {
-        this._storage = storage;
+  constructor(storage: Storage) {
+    this._storage = storage;
+  }
+
+  public setPassword(oldPassword: string, newPassword: string): void {
+    const key = this.getKey(oldPassword);
+    this.setKey(key, newPassword);
+  }
+
+  public getKey(password: string): IEncryptionKey {
+    const encryptedKeyData = this._storage.getItem(KeyManager.KEY_PROPERTY);
+
+    if (!encryptedKeyData) {
+      throw new Error("Encryption key is not set.");
     }
 
-    public setPassword(oldPassword: string, newPasword: string): void {
-        const key = this.getKey(oldPassword);
-        this.setKey(key, newPasword);
-    }
+    const bytes: CryptoJS.lib.WordArray = CryptoJS.AES.decrypt(encryptedKeyData, password);
+    const serializedKey = bytes.toString(CryptoJS.enc.Utf8);
 
-    public getKey(password: string): IEcryptionKey {
-        const encryptedKeyData = this._storage.getItem(KeyManager.KEY_PROPERTY);
-        if (!encryptedKeyData) {
-            throw new Error("Encryption key is not set.");
-        }
+    return JSON.parse(serializedKey);
+  }
 
-        const derivedKey = KeyManager._derivedKey(password);
-
-        const bytes = CryptoJS.AES.decrypt(encryptedKeyData, derivedKey);
-        const serializedKey = bytes.toString(CryptoJS.enc.Utf8);
-        
-        const parsed = JSON.parse(serializedKey);
-        const key = {...parsed, created: new Date(parsed.created)};
-        return key;
-    }
-
-    public setKey(key: IEcryptionKey, password: string): void {
-        const converted = {...key, created: key.created.toString()}
-        const keyData = JSON.stringify(converted, null, "");
-        const derivedKey = KeyManager._derivedKey(password);
-        const encryptedKeyData = CryptoJS.AES.encrypt(keyData, derivedKey).toString();
-        this._storage.setItem(KeyManager.KEY_PROPERTY, encryptedKeyData);
-    }
-
-    private static _derivedKey(password: string): string {
-        const derivedKey = pbkdf2.pbkdf2Sync(password, 'salt', 1, 512, 'sha512');
-        const hexKey = derivedKey.toString("hex");
-        return hexKey;
-    }
+  public setKey(key: IEncryptionKey, password: string): void {
+    const keyData = JSON.stringify(key, null, "");
+    const encryptedKeyData = CryptoJS.AES.encrypt(keyData, password).toString();
+    this._storage.setItem(KeyManager.KEY_PROPERTY, encryptedKeyData);
+  }
 }

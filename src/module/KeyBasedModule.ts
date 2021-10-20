@@ -1,13 +1,10 @@
-import { IEncryptionModule } from "./IEncryptionModule";
+import {EncryptionModule} from "./EncryptionModule";
 
-export abstract class KeyBasedModule implements IEncryptionModule {
-    protected _key: string;
+export abstract class KeyBasedModule extends EncryptionModule {
+  protected readonly _encryptionSecret: string;
 
-    constructor(key: string) {
-        this._key = key;
-    }
-
-    public abstract encrypt(clearText: string): string;
-        
-    public abstract decrypt(encrypted: string): string;
+  protected constructor(type: string, secret: string) {
+    super(type);
+    this._encryptionSecret = secret;
+  }
 }

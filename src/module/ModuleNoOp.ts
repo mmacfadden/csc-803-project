@@ -1,13 +1,17 @@
-import { IEncryptionModule } from "./IEncryptionModule";
+import {EncryptionModule} from "./EncryptionModule";
 
-export class ModuleNoOp implements IEncryptionModule {
-    static readonly TYPE = "NoOp";
+export class ModuleClearText extends EncryptionModule {
+  public static readonly TYPE = "Clear Text Storage";
 
-    encrypt(clearText: string): string {
-        return clearText;
-    }
-    
-    decrypt(encrypted: string): string {
-        return encrypted;
-    }
+  constructor() {
+    super(ModuleClearText.TYPE);
+  }
+
+  public async encrypt(clearText: string): Promise<string> {
+    return clearText;
+  }
+
+  public async decrypt(encrypted: string): Promise<string> {
+    return encrypted;
+  }
 }
