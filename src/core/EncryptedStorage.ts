@@ -1,12 +1,10 @@
-import {EncryptionModule} from "../module/EncryptionModule";
-import {StorageProxy} from "./StorageProxy";
-import LZUTF8 from "lzutf8";
+import {EncryptionModule} from "../module/";
 import * as lz from "lz-string";
 
 export class EncryptedStorage {
   private _encryptionModule: EncryptionModule;
   private _storage: Storage;
-  private _compress: boolean;
+  private readonly _compress: boolean;
 
   constructor(encryptionModule: EncryptionModule,
               storage: Storage,

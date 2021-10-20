@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { InMemoryStorage } from '../../src/core/InMemoryStorage';
+import { InMemoryStorage } from '../../src/';
 
 const KEY = "k";
 const VALUE = "value";

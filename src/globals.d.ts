@@ -1,4 +1,4 @@
-module "triplesec" {
+declare module "triplesec" {
   export class Encryptor {
     constructor(args: { key: Buffer, rng?: any, version?: any })
 

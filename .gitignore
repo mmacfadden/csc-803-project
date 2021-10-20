@@ -2,3 +2,4 @@ node_modules
 .localStorage
 .idea
 .key_storage
+coverage

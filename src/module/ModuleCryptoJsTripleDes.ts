@@ -1,4 +1,4 @@
-import CryptoJS from "crypto-js";
+import * as CryptoJS from "crypto-js";
 import {KeyBasedModule} from "./KeyBasedModule";
 
 export class ModuleCryptoJsTripleDes extends KeyBasedModule {

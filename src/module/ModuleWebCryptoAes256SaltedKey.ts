@@ -15,7 +15,10 @@ export class ModuleWebCryptoAes256SaltedKey extends KeyBasedModule {
     const iv = crypto.getRandomValues(new Uint8Array(12));
     const encryptedContent = await crypto.subtle.encrypt({name: "AES-GCM", iv}, aesKey, dataAsBytes);
     const encryptedBytes = new Uint8Array(encryptedContent);
-    const payload = new Uint8Array([...salt, ...iv, ...encryptedBytes]);
+    const payload = new Uint8Array(salt.length + iv.length + encryptedBytes.length);
+    payload.set(salt)
+    payload.set(iv, salt.length);
+    payload.set(encryptedBytes, salt.length + iv.length);
 
     return Buffer.from(payload).toString("base64");
   }

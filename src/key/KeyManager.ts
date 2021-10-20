@@ -1,4 +1,4 @@
-import CryptoJS from 'crypto-js';
+import * as CryptoJS from 'crypto-js';
 import {IEncryptionKey} from "./IEncryptionKey";
 
 export class KeyManager {
