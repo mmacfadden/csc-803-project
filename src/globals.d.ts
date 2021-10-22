@@ -11,3 +11,14 @@ declare module "triplesec" {
     public run(args: { data: Buffer }, cb: (err, red: Buffer) => void);
   }
 }
+
+declare module "twofish" {
+  export function twofish(): ITwoFish;
+
+  export interface ITwoFish {
+    stringToByteArray(str: string): number[];
+    byteArrayToString(arr: number[]): string;
+    encrypt(key: number[], pt: number[]): number[];
+    decrypt(key: number[] , ct: number[]): number[];
+  }
+}

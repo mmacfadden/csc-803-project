@@ -7,3 +7,5 @@ export * from "./ModuleTripleSec";
 export * from "./ModuleNoOp";
 export * from "./ModuleWebCryptoAes256";
 export * from "./ModuleWebCryptoAes256SaltedKey";
+export * from "./ModuleBlowfish";
+export * from "./ModuleTwoFish";

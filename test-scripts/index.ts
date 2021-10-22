@@ -2,15 +2,16 @@ import {LocalStorage} from "node-localstorage";
 import {
     IEncryptionKey,
     LoadTester,
+    ModuleBlowfish,
     ModuleClearText,
-    ModuleCryptoJsAes256,
     ModuleCryptoJsAes128,
+    ModuleCryptoJsAes256,
     ModuleCryptoJsTripleDes,
-    ModuleTripleSec,
+    ModuleTripleSec, ModuleTwoFish,
     ModuleWebCryptoAes256,
-    ModuleWebCryptoAes256SaltedKey
+    ModuleWebCryptoAes256SaltedKey,
+    RandomStringGenerator
 } from "../src/";
-import {RandomStringGenerator} from "../src/core/RandomStringGenerator";
 import {Crypto} from "node-webcrypto-ossl";
 
 if (global.crypto === undefined) {
@@ -32,7 +33,9 @@ const configs: IEncryptionKey[] = [
     {type: ModuleCryptoJsAes128.TYPE, secret: encryption_secret},
     {type: ModuleCryptoJsAes256.TYPE, secret: encryption_secret},
     {type: ModuleCryptoJsTripleDes.TYPE, secret: encryption_secret},
-    {type: ModuleTripleSec.TYPE, secret: encryption_secret}
+    {type: ModuleTripleSec.TYPE, secret: encryption_secret},
+    {type: ModuleBlowfish.TYPE, secret: encryption_secret},
+    {type: ModuleTwoFish.TYPE, secret: encryption_secret},
 ];
 
 
@@ -44,6 +47,7 @@ async function* asyncGenerator() {
   }
 
 const run = async () => {
+    LoadTester.printCsvHeader();
     for await (let result of asyncGenerator()) {
 
     }

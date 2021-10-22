@@ -1,6 +1,7 @@
 import {IEncryptionKey} from "../key";
 import {
   EncryptionModule,
+  ModuleBlowfish,
   ModuleClearText,
   ModuleCryptoJsAes128,
   ModuleCryptoJsAes256,
@@ -9,6 +10,7 @@ import {
   ModuleWebCryptoAes256,
   ModuleWebCryptoAes256SaltedKey
 } from "./";
+import {ModuleTwoFish} from "./ModuleTwoFish";
 
 export class EncryptionModuleFactory {
   public static createModule(key: IEncryptionKey): EncryptionModule {
@@ -30,6 +32,12 @@ export class EncryptionModuleFactory {
 
       case ModuleWebCryptoAes256.TYPE:
         return new ModuleWebCryptoAes256(key.secret);
+
+      case ModuleBlowfish.TYPE:
+        return new ModuleBlowfish(key.secret);
+
+      case ModuleTwoFish.TYPE:
+        return new ModuleTwoFish(key.secret);
 
       case ModuleClearText.TYPE:
         return new ModuleClearText();

@@ -1,4 +1,4 @@
-import {Encryptor, Decryptor} from "triplesec";
+import {Decryptor, Encryptor} from "triplesec";
 import {KeyBasedModule} from "./KeyBasedModule";
 
 export class ModuleTripleSec extends KeyBasedModule {

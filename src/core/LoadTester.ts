@@ -1,18 +1,16 @@
-import {
-  IEncryptionKey,
-  KeyManager,
-  EncryptionModule,
-  EncryptedStorage,
-  EncryptionModuleFactory
-} from "../";
+import {EncryptedStorage, EncryptionModule, EncryptionModuleFactory, IEncryptionKey, KeyManager} from "../";
 import {RandomStringGenerator} from "./RandomStringGenerator";
+import {Timing} from "./Timing";
 
 export class LoadTester {
+  public static printCsvHeader(): void {
+    console.log(`Encryption Module, Entry Count, Cumulative Time (ms), Average Read/Write Time (ms), Average Write Time (ms), Average Read Time (ms)`);
+  }
+
   private readonly _keyManager: KeyManager;
   private readonly _encModule: EncryptionModule;
-  private _storage: EncryptedStorage;
+  private readonly _storage: EncryptedStorage;
   private readonly _key: IEncryptionKey;
-
 
   constructor(
     key: IEncryptionKey,
@@ -29,26 +27,35 @@ export class LoadTester {
   }
 
   public async loadTest(entryCount: number, valueSize: number): Promise<void> {
-    console.log(`Load testing ${this._key.type}...`);
-
     await this._encModule.init();
 
     const value = RandomStringGenerator.generate(valueSize);
 
-    const startTime = Date.now();
+    let cumulativeWriteTime = 0;
+    let cumulativeReadTime = 0;
 
     for (let i = 0; i < entryCount; i++) {
       const k = `key_${i}`;
+
+      const writeStartTime = Timing.now();
       await this._storage.setItem(k, value);
+
+      const readStartTime = Timing.now();
       const read = await this._storage.getItem(k);
 
+      cumulativeReadTime += Timing.now() - readStartTime;
+      cumulativeWriteTime += readStartTime - writeStartTime;
+
       if (read !== value) {
-        throw new Error(`values did not match:\n${value}\n${read}`);
+        throw new Error(`values did not match:\n"${value}"\n"${read}"`);
       }
     }
 
-    const endTime = Date.now();
+    const cumulativeTime = cumulativeWriteTime + cumulativeReadTime;
+    const averageTime = cumulativeTime / entryCount;
+    const averageWriteTime = cumulativeWriteTime / entryCount;
+    const averageReadTime = cumulativeReadTime / entryCount;
 
-    console.log(`Write and read ${entryCount} items with ${this._key.type} in ${endTime - startTime}ms`);
+    console.log(`${this._encModule.type()},${entryCount},${cumulativeTime},${averageTime},${averageWriteTime},${averageReadTime}`);
   }
 }
