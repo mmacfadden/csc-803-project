@@ -10,7 +10,8 @@
   "scripts": {
     "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'test/**/*Spec.ts'",
     "load-test": "node -r ts-node/register test-scripts/index.ts",
-    "build": "webpack"
+    "build": "webpack",
+    "clean": "rimraf .key_storage .localStorage dist"
   },
   "devDependencies": {
     "@types/brotli": "^1.3.1",
@@ -36,6 +37,7 @@
     "node-localstorage": "2.2.1",
     "node-webcrypto-ossl": "^2.1.3",
     "pbkdf2": "3.1.2",
+    "rimraf": "^3.0.2",
     "triplesec": "^4.0.3",
     "ts-loader": "^8.3.0",
     "ts-node": "^10.2.1",
