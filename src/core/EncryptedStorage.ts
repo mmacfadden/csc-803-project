@@ -1,9 +1,14 @@
 import {EncryptionModule} from "../module/";
 import * as lz from "lz-string";
 
+/**
+ * Implements an encrypted facade for the HTML5 Storage API. The API
+ * is almost binary compatible to the HTML5 Storage API itself. All
+ * data will be encrypted before sent to the underlying Storage.
+ */
 export class EncryptedStorage {
-  private _encryptionModule: EncryptionModule;
-  private _storage: Storage;
+  private readonly _encryptionModule: EncryptionModule;
+  private readonly _storage: Storage;
   private readonly _compress: boolean;
 
   constructor(encryptionModule: EncryptionModule,

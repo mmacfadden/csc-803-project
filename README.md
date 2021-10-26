@@ -1,26 +1,53 @@
-# CSC 803 Research Project
-This repository hosts the CSC 803 Final Project source code.
+# MacFadden CSC-803 Research Project
+This repository hosts Michael MacFadden's Final Project source code for CSC-803 "An Introduction to Cyber Security Research".
 
-## Tested Algorithms
+* [Introduction](#introduction)
+* [Dependencies](#dependencies)
+* [Build](#build)
+* [Command Line Testing for NodeJS](#command-line-test-for-nodejs)
+* [Browser Testing](#browser-testing)
+* [Encryption Algorithms](#encryption-algorithms)
+
+# Introduction
+
+# Dependencies
+  * NodeJS 14.x
+  * Yarn 1.22.x
+
+# Build
+
+```shell
+yarn install
+npm run build
+```
+
+# Command Line Test for NodeJS
+```
+npm run load-test
+```
+
+# Browser Testing
+You must have already built the code before using the browser tests. Assuming the code is built, then simply open the [test-pages/index.html](test-pages/index.html) file in a browser.  Then click the "Run Load Test" button at the top of the screen. Once the tests have completed you can download a comma separated value (CSV) file containing the results by hitting the "Download Results" button at the bottom of the screen.
+
+![](assets/scree-shot.png)
+
+## Encryption Algorithms
 
 * CryptoJS
   * AES-128
   * AES-256
   * DES
-  * TrippleDES
-  * Rabbit
+  * TripleDES
 
-* Blowfish
-  * egoroof-blowfish
+* WebCrypto API
+    * AES 128
+    * AES 256
+    
+* egoroof-blowfish
+  * Blowfish
 
-* Two Fish
-  * twofish
+* twofish
+  * Two Fish
 
-
-https://github.com/clipperz/javascript-crypto-library
-https://github.com/asmcrypto/asmcrypto.js/blob/master/test/aes.js
-
-https://bradyjoslin.com/blog/encryption-webcrypto/
-
-
-node -r ts-node/register ./test-scripts/index.ts
+* TripleSec
+    * TripleSec

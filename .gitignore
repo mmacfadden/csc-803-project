@@ -1,8 +1,6 @@
-node_modules
-.localStorage
 .idea
+.localStorage
 .key_storage
-coverage
+node_modules
 dist/
-
 yarn-error.log

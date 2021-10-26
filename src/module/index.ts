@@ -4,7 +4,7 @@ export * from "./ModuleCryptoJsAes256";
 export * from "./ModuleCryptoJsAes128";
 export * from "./ModuleCryptoJsTripleDes";
 export * from "./ModuleTripleSec";
-export * from "./ModuleNoOp";
+export * from "./ModuleClearText";
 export * from "./ModuleWebCryptoAes256";
 export * from "./ModuleWebCryptoAes256SaltedKey";
 export * from "./ModuleBlowfish";

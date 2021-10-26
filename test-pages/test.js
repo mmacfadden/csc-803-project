@@ -1,45 +1,73 @@
-import {ModuleTwoFish} from "../src";
+const {LoadTester} = EncryptedStorage;
 
-const {
-  ModuleClearText,
-  ModuleWebCryptoAes256SaltedKey,
-  ModuleWebCryptoAes256,
-  ModuleCryptoJsAes128,
-  ModuleCryptoJsAes256,
-  ModuleCryptoJsTripleDes,
-  ModuleTripleSec,
-  ModuleBlowfish,
-  RandomStringGenerator,
-  LoadTester
-} = EncryptedStorage;
+const status = $("#status");
+const resultsTextArea = $("#results");
+const runButton = $("#run");
+const downloadButton = $("#download");
 
-const encryption_secret = RandomStringGenerator.generate(200);
-const masterPassword = "password";
+function downloadCsv() {
+  const textFileAsBlob = new Blob([resultsTextArea.val()], {type:'text/plain'});
+  const downloadLink = document.createElement("a");
+  downloadLink.download = "load-test-results.csv";
+  downloadLink.innerHTML = "Download File";
+  if (window.webkitURL != null) {
+    // Chrome allows the link to be clicked
+    // without actually adding it to the DOM.
+    downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+  } else {
+    // Firefox requires the link to be added to the DOM
+    // before it can be clicked.
+    downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+    downloadLink.onclick = destroyClickedElement;
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+  }
 
-const configs = [
-  {type: ModuleClearText.TYPE, secret: encryption_secret},
-  {type: ModuleWebCryptoAes256SaltedKey.TYPE, secret: encryption_secret},
-  {type: ModuleWebCryptoAes256.TYPE, secret: encryption_secret},
-  {type: ModuleCryptoJsAes128.TYPE, secret: encryption_secret},
-  {type: ModuleCryptoJsAes256.TYPE, secret: encryption_secret},
-  {type: ModuleCryptoJsTripleDes.TYPE, secret: encryption_secret},
-  {type: ModuleTripleSec.TYPE, secret: encryption_secret},
-  {type: ModuleBlowfish.TYPE, secret: encryption_secret},
-  {type: ModuleTwoFish.TYPE, secret: encryption_secret}
-];
+  downloadLink.click();
 
-async function* asyncGenerator() {
-  for (const i in configs) {
-    localStorage.clear();
-    const tester = new LoadTester(configs[i], masterPassword, localStorage);
-    yield tester.loadTest(100, 100);
+  if (downloadLink.parentNode) {
+    downloadLink.parentNode.removeChild(downloadLink);
   }
 }
 
-const run = async () => {
-  for await (let result of asyncGenerator()) {
 
+let currentTest = null;
+
+const hooks = {
+  testStarted(module) {
+    currentTest = $(`<li class="list-group-item">Testing "${module}"...</li>`);
+    status.append(currentTest);
+    scrollToBottomOfStatus();
+  },
+  testFinished(module) {
+    currentTest.append(" Done");
   }
 }
 
-run().catch(e => console.error(e));
+async function loadTest() {
+  status.empty();
+  resultsTextArea.val("");
+
+  runButton.prop("disabled",true);
+  downloadButton.prop("disabled",true);
+
+  try {
+    const results = await LoadTester.testAll("password", localStorage, true, hooks);
+    currentTest = $(`<li class="list-group-item">All tests complete.</li>`);
+    scrollToBottomOfStatus();
+    const data = results.join("\n");
+    resultsTextArea.val(data);
+
+    runButton.prop("disabled",false);
+    downloadButton.prop("disabled",false);
+  } catch (e) {
+    runButton.prop("disabled",false);
+    downloadButton.prop("disabled",true);
+    status.append($(`<div>Error (see console for more details): ${e.message}</div>`));
+    console.log(e);
+  }
+}
+
+function scrollToBottomOfStatus() {
+  status.scrollTop(status[0].scrollHeight);
+}

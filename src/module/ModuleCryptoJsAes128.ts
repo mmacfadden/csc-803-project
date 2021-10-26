@@ -9,12 +9,9 @@ export class ModuleCryptoJsAes128 extends KeyBasedModule {
 
   constructor(secret: string) {
     super(ModuleCryptoJsAes128.TYPE, secret);
-    // todo we should store these in the config
     const salt = CryptoJS.lib.WordArray.random(128 / 8);
     this._iv  = CryptoJS.enc.Hex.parse("101112131415161718191a1b1c1d1e1f");
-    this._derivedKey = CryptoJS.PBKDF2(secret, salt, {
-      keySize: 128 / 32
-    });
+    this._derivedKey = CryptoJS.PBKDF2(secret, salt, {keySize: 128 / 32});
   }
 
   public async encrypt(plainText: string): Promise<string> {

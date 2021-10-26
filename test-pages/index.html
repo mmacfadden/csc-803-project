@@ -2,10 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Local Storage Encryption</title>
+    <title>Local Storage Encryption Load Test</title>
     <script src="../dist/encrypted-storage.js"></script>
+    <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="index.css"/>
 </head>
 <body>
+<div id="top">
+    <button class="btn btn-primary" id="run" onclick="loadTest()">Run Load Test</button>
+</div>
+<div id="main">
+    <h1>Status</h1>
+    <ul id="status" class="list-group list-group-flush"></ul>
+    <h1>Results</h1>
+    <textarea readonly="readonly" id="results"></textarea>
+    <div><button id="download" class="btn btn-primary" onclick="downloadCsv()" disabled="disabled">Download Results</button></div>
+</div>
 <script src="./test.js"></script>
 </body>
 </html>

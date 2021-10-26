@@ -1,3 +1,3 @@
 export * from "./core";
-export * from "./key";
+export * from "./config";
 export * from "./module";

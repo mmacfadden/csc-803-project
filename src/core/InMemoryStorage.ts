@@ -1,5 +1,7 @@
-import {StorageProxy} from "./StorageProxy";
-
+/**
+ * An implementation of the HTML5 Storage API that
+ * simply stores all values in memory.
+ */
 export class InMemoryStorage implements Storage {
 
   private _data: Map<string, string>;
@@ -8,8 +10,25 @@ export class InMemoryStorage implements Storage {
 
   constructor() {
     this._data = new Map();
-    return StorageProxy.create(this);
-    ;
+
+    return new Proxy(this, {
+      set: (target: Storage, prop: string, value: any, _: any) => {
+
+        if (target[prop] != null) {
+          target[prop] = value;
+        } else {
+          target.setItem(prop, value);
+        }
+        return true;
+      },
+      get: (target: Storage, prop: string, _: any) => {
+        if (target[prop] != null) {
+          return target[prop];
+        } else {
+          return target.getItem(prop);
+        }
+      }
+    }) as InMemoryStorage;
   }
 
   public get length(): number {

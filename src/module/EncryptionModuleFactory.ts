@@ -1,4 +1,4 @@
-import {IEncryptionKey} from "../key";
+import {IEncryptionConfig} from "../config";
 import {
   EncryptionModule,
   ModuleBlowfish,
@@ -13,7 +13,7 @@ import {
 import {ModuleTwoFish} from "./ModuleTwoFish";
 
 export class EncryptionModuleFactory {
-  public static createModule(key: IEncryptionKey): EncryptionModule {
+  public static createModule(key: IEncryptionConfig): EncryptionModule {
     switch (key.type) {
       case ModuleCryptoJsAes256.TYPE:
         return new ModuleCryptoJsAes256(key.secret);
