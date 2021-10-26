@@ -1,11 +1,11 @@
 import * as CryptoJS from "crypto-js";
-import {KeyBasedModule} from "./KeyBasedModule";
+import {SymmetricEncryptionBasedModule} from "./SymmetricEncryptionBasedModule";
 
-export class ModuleCryptoJsAes256 extends KeyBasedModule {
-  static readonly TYPE = "AES 256 (Crypto JS)";
+export class ModuleCryptoJsAes256 extends SymmetricEncryptionBasedModule {
+  static readonly MODULE_ID = "AES 256 (Crypto JS)";
 
   constructor(secret: string) {
-    super(ModuleCryptoJsAes256.TYPE, secret);
+    super(ModuleCryptoJsAes256.MODULE_ID, secret);
   }
 
   public async encrypt(plainText: string): Promise<string> {

@@ -1,5 +1,5 @@
 export * from "./EncryptionModuleFactory";
-export * from "./EncryptionModule";
+export * from "./WebStorageEncryptionModule";
 export * from "./ModuleCryptoJsAes256";
 export * from "./ModuleCryptoJsAes128";
 export * from "./ModuleCryptoJsTripleDes";

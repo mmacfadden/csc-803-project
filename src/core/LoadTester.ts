@@ -1,7 +1,7 @@
 import {
   EncryptedStorage,
   EncryptionConfigManager,
-  EncryptionModule,
+  WebStorageEncryptionModule,
   EncryptionModuleFactory,
   IEncryptionConfig,
   ModuleBlowfish,
@@ -45,15 +45,15 @@ export class LoadTester {
                               hooks?: ILoadTesterHooks): Promise<string[]> {
     const encryption_secret = RandomStringGenerator.generate(200);
     const configs: IEncryptionConfig[] = [
-      {type: ModuleClearText.TYPE, secret: encryption_secret},
-      {type: ModuleWebCryptoAes256SaltedKey.TYPE, secret: encryption_secret},
-      {type: ModuleWebCryptoAes256.TYPE, secret: encryption_secret},
-      {type: ModuleCryptoJsAes128.TYPE, secret: encryption_secret},
-      {type: ModuleCryptoJsAes256.TYPE, secret: encryption_secret},
-      {type: ModuleCryptoJsTripleDes.TYPE, secret: encryption_secret},
-      {type: ModuleTripleSec.TYPE, secret: encryption_secret},
-      {type: ModuleBlowfish.TYPE, secret: encryption_secret},
-      {type: ModuleTwoFish.TYPE, secret: encryption_secret},
+      {moduleId: ModuleClearText.MODULE_ID, secret: encryption_secret},
+      {moduleId: ModuleWebCryptoAes256SaltedKey.MODULE_ID, secret: encryption_secret},
+      {moduleId: ModuleWebCryptoAes256.MODULE_ID, secret: encryption_secret},
+      {moduleId: ModuleCryptoJsAes128.MODULE_ID, secret: encryption_secret},
+      {moduleId: ModuleCryptoJsAes256.MODULE_ID, secret: encryption_secret},
+      {moduleId: ModuleCryptoJsTripleDes.MODULE_ID, secret: encryption_secret},
+      {moduleId: ModuleTripleSec.MODULE_ID, secret: encryption_secret},
+      {moduleId: ModuleBlowfish.MODULE_ID, secret: encryption_secret},
+      {moduleId: ModuleTwoFish.MODULE_ID, secret: encryption_secret},
     ];
 
     return LoadTester.runTests(masterPassword, storage, configs, quiet, hooks);
@@ -133,7 +133,7 @@ export class LoadTester {
   }
 
   private readonly _keyManager: EncryptionConfigManager;
-  private readonly _encModule: EncryptionModule;
+  private readonly _encModule: WebStorageEncryptionModule;
   private readonly _storage: EncryptedStorage;
   private readonly _key: IEncryptionConfig;
 
@@ -177,15 +177,15 @@ export class LoadTester {
                         valueSize: number,
                         quiet: boolean,
                         hooks?: ILoadTesterHooks): Promise<string> {
-    await this._encModule.init();
-
     if (hooks) {
-      hooks.testStarted(this._encModule.type());
+      hooks.testStarted(this._encModule.moduleId());
     }
 
     if (!quiet) {
-      console.log(`Testing ${this._encModule.type()}`);
+      console.log(`Testing ${this._encModule.moduleId()}`);
     }
+
+    await this._encModule.init();
 
     let cumulativeWriteTime = 0;
     let cumulativeReadTime = 0;
@@ -214,9 +214,9 @@ export class LoadTester {
     const averageReadTime = cumulativeReadTime / entryCount;
 
     if (hooks) {
-      hooks.testFinished(this._encModule.type());
+      hooks.testFinished(this._encModule.moduleId());
     }
 
-    return `${this._encModule.type()},${entryCount},${cumulativeTime},${averageTime},${averageWriteTime},${averageReadTime}`;
+    return `${this._encModule.moduleId()},${entryCount},${cumulativeTime},${averageTime},${averageWriteTime},${averageReadTime}`;
   }
 }

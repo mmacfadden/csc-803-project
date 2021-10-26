@@ -1,11 +1,11 @@
-import {KeyBasedModule} from "./KeyBasedModule";
+import {SymmetricEncryptionBasedModule} from "./SymmetricEncryptionBasedModule";
 import {WebCryptoUtil} from "./WebCryptoUtil";
 
-export class ModuleWebCryptoAes256SaltedKey extends KeyBasedModule {
-  static readonly TYPE = "AES 256 (WebCrypto API w/ Salted Key)";
+export class ModuleWebCryptoAes256SaltedKey extends SymmetricEncryptionBasedModule {
+  static readonly MODULE_ID = "AES 256 (WebCrypto API w/ Salted Key)";
 
   constructor(secret: string) {
-    super(ModuleWebCryptoAes256SaltedKey.TYPE, secret);
+    super(ModuleWebCryptoAes256SaltedKey.MODULE_ID, secret);
   }
 
   public async encrypt(plainText: string): Promise<string> {

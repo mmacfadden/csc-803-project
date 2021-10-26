@@ -4,9 +4,9 @@
  */
 export interface IEncryptionConfig {
   /**
-   * The type id of the encryption module to use.
+   * The module id of the encryption module to use.
    */
-  type: string;
+  moduleId: string;
 
   /**
    * The symmetric secret used for the encryption.

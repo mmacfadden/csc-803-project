@@ -1,12 +1,12 @@
-import {KeyBasedModule} from "./KeyBasedModule";
+import {SymmetricEncryptionBasedModule} from "./SymmetricEncryptionBasedModule";
 import {WebCryptoUtil} from "./WebCryptoUtil";
 
-export class ModuleWebCryptoAes256 extends KeyBasedModule {
-  static readonly TYPE = "AES 256 (WebCrypto API)";
+export class ModuleWebCryptoAes256 extends SymmetricEncryptionBasedModule {
+  static readonly MODULE_ID = "AES 256 (WebCrypto API)";
   private _derivedKey: CryptoKey | null;
 
   constructor(secret: string) {
-    super(ModuleWebCryptoAes256.TYPE, secret);
+    super(ModuleWebCryptoAes256.MODULE_ID, secret);
     this._derivedKey = null;
   }
 

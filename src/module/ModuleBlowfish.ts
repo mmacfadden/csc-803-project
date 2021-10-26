@@ -1,14 +1,14 @@
 import Blowfish from "egoroof-blowfish";
-import {KeyBasedModule} from "./KeyBasedModule";
+import {SymmetricEncryptionBasedModule} from "./SymmetricEncryptionBasedModule";
 import {RandomStringGenerator} from "../core";
 
-export class ModuleBlowfish extends KeyBasedModule {
-  public static readonly TYPE = "Blowfish (egoroof)";
+export class ModuleBlowfish extends SymmetricEncryptionBasedModule {
+  public static readonly MODULE_ID = "Blowfish (egoroof)";
 
   private readonly _bf: Blowfish;
 
   constructor(secret: string) {
-    super(ModuleBlowfish.TYPE, secret);
+    super(ModuleBlowfish.MODULE_ID, secret);
     this._bf = new Blowfish(this._encryptionSecret, Blowfish.MODE.ECB, Blowfish.PADDING.NULL);
     this._bf.setIv(RandomStringGenerator.generate(8));
   }

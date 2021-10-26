@@ -1,10 +1,10 @@
-import {EncryptionModule} from "./EncryptionModule";
+import {WebStorageEncryptionModule} from "./WebStorageEncryptionModule";
 
-export class ModuleClearText extends EncryptionModule {
-  public static readonly TYPE = "Clear Text Storage";
+export class ModuleClearText extends WebStorageEncryptionModule {
+  public static readonly MODULE_ID = "Clear Text Storage";
 
   constructor() {
-    super(ModuleClearText.TYPE);
+    super(ModuleClearText.MODULE_ID);
   }
 
   public async encrypt(clearText: string): Promise<string> {

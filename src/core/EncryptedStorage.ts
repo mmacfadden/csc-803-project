@@ -1,4 +1,4 @@
-import {EncryptionModule} from "../module/";
+import {WebStorageEncryptionModule} from "../module/";
 import * as lz from "lz-string";
 
 /**
@@ -7,11 +7,11 @@ import * as lz from "lz-string";
  * data will be encrypted before sent to the underlying Storage.
  */
 export class EncryptedStorage {
-  private readonly _encryptionModule: EncryptionModule;
+  private readonly _encryptionModule: WebStorageEncryptionModule;
   private readonly _storage: Storage;
   private readonly _compress: boolean;
 
-  constructor(encryptionModule: EncryptionModule,
+  constructor(encryptionModule: WebStorageEncryptionModule,
               storage: Storage,
               compress: boolean = false) {
     this._encryptionModule = encryptionModule;

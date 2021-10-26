@@ -1,14 +1,14 @@
 import {twofish, ITwoFish} from "twofish";
-import {KeyBasedModule} from "./KeyBasedModule";
+import {SymmetricEncryptionBasedModule} from "./SymmetricEncryptionBasedModule";
 
-export class ModuleTwoFish extends KeyBasedModule {
-  public static readonly TYPE = "TwoFish (wouldgo)";
+export class ModuleTwoFish extends SymmetricEncryptionBasedModule {
+  public static readonly MODULE_ID = "TwoFish (wouldgo)";
 
   private readonly _twofish: ITwoFish;
   private readonly _key: number[];
 
   constructor(secret: string) {
-    super(ModuleTwoFish.TYPE, secret);
+    super(ModuleTwoFish.MODULE_ID, secret);
     this._twofish = twofish();
     this._key = this._twofish.stringToByteArray(secret);
   }

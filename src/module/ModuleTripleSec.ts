@@ -1,13 +1,13 @@
 import {Decryptor, Encryptor} from "triplesec";
-import {KeyBasedModule} from "./KeyBasedModule";
+import {SymmetricEncryptionBasedModule} from "./SymmetricEncryptionBasedModule";
 
-export class ModuleTripleSec extends KeyBasedModule {
-  static readonly TYPE = "Triple Sec";
+export class ModuleTripleSec extends SymmetricEncryptionBasedModule {
+  static readonly MODULE_ID = "Triple Sec";
   private readonly _encryptor: Encryptor;
   private readonly _decryptor: Decryptor;
 
   constructor(secret: string) {
-    super(ModuleTripleSec.TYPE, secret);
+    super(ModuleTripleSec.MODULE_ID, secret);
     const k = Buffer.from(secret, "utf-8");
     this._encryptor = new Encryptor({key: k});
     this._decryptor = new Decryptor({key: k});
