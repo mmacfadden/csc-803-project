@@ -13,7 +13,7 @@ export class WebCryptoUtil {
       {
         name: "PBKDF2",
         salt,
-        iterations: 250000,
+        iterations: 100000,
         hash: {name: "SHA-256"}
       },
       passwordKey,

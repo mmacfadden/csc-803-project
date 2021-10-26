@@ -44,6 +44,6 @@ export abstract class WebStorageEncryptionModule {
    * to encrypt / decrypt data.
    */
   public async init(): Promise<void> {
-
+    // no-op in this base class.
   }
 }

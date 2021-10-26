@@ -12,7 +12,21 @@ import {
 } from "./";
 import {ModuleTwoFish} from "./ModuleTwoFish";
 
+/**
+ * A factory class that creates a WebStorageEncryptionModule based on a
+ * supplied configuration object.
+ */
 export class EncryptionModuleFactory {
+  /**
+   * Creates a new WebStorageEncryptionModule base on the config passed in.
+   *
+   * @param config
+   *   The configuration which determines which type of module to create.
+   *
+   * @returns The created module of the correct type.
+   *
+   * @throws If the config.moduleId is not recognized.
+   */
   public static createModule(config: IEncryptionConfig): WebStorageEncryptionModule {
     switch (config.moduleId) {
       case ModuleCryptoJsAes256.MODULE_ID:
@@ -43,7 +57,7 @@ export class EncryptionModuleFactory {
         return new ModuleClearText();
 
       default:
-        throw new Error("Unknown key type: " + config.moduleId);
+        throw new Error("Unknown module id: " + config.moduleId);
     }
   }
 }

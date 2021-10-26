@@ -1,12 +1,17 @@
 const {LoadTester} = EncryptedStorage;
 
+//
+// UI Elements
+//
 const status = $("#status");
 const resultsTextArea = $("#results");
 const runButton = $("#run");
 const downloadButton = $("#download");
 
+// Tracks the current test's status item.
 let currentTest = null;
 
+// Used to be notified of test progress.
 const hooks = {
   testStarted(module) {
     currentTest = $(`<li class="list-group-item">Testing "${module}"...</li>`);
@@ -15,9 +20,13 @@ const hooks = {
   },
   testFinished(module) {
     currentTest.append(" Done");
+    currentTest = null;
   }
 }
 
+/**
+ * Executes the load test procedure.
+ */
 async function loadTest() {
   status.empty();
   resultsTextArea.val("");
@@ -42,11 +51,18 @@ async function loadTest() {
   }
 }
 
+/**
+ * A helper method the cases the status <ul> to scroll to
+ * the bottom to show the last item added.
+ */
 function scrollToBottomOfStatus() {
   status.scrollTop(status[0].scrollHeight);
 }
 
-
+/**
+ * A helper method to download the contents of the results text
+ * area as a CSV file.
+ */
 function downloadCsv() {
   const textFileAsBlob = new Blob([resultsTextArea.val()], {type: 'text/plain'});
   const downloadLink = document.createElement("a");

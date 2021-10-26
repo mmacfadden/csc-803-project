@@ -9,7 +9,7 @@
   "private": true,
   "scripts": {
     "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'test/**/*Spec.ts'",
-    "load-test": "node -r ts-node/register test-scripts/index.ts",
+    "load": "node -r ts-node/register test-scripts/index.ts",
     "build": "webpack",
     "clean": "rimraf .key_storage .localStorage dist"
   },
