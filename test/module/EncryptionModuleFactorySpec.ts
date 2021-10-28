@@ -1,18 +1,23 @@
 import {expect} from 'chai';
 import {
-  EncryptionModuleFactory, ModuleBlowfish, ModuleClearText,
+  EncryptionModuleFactory,
+  ModuleBlowfish,
+  ModuleClearText,
   ModuleCryptoJsAes128,
   ModuleCryptoJsAes256,
   ModuleCryptoJsTripleDes,
-  ModuleTripleSec, ModuleTwoFish, ModuleWebCryptoAes256, ModuleWebCryptoAes256SaltedKey
+  ModuleTripleSec,
+  ModuleTwoFish,
+  ModuleWebCryptoAes256,
+  ModuleWebCryptoAes256SaltedKey
 } from '../../src/';
 
 describe('EncryptionModuleFactory', () => {
 
   describe('createModule', () => {
-    it('throws on unknown type', () => {
-      expect(() =>
-        EncryptionModuleFactory.createModule({moduleId: "unknown", secret: "none"})).to.throw;
+    it('throws on an unknown moduleId', () => {
+      const config = {moduleId: "unknown", secret: "none"};
+      expect(() => EncryptionModuleFactory.createModule(config)).to.throw();
     });
 
     it(ModuleCryptoJsAes256.MODULE_ID, () => {

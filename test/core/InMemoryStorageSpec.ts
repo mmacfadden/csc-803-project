@@ -26,6 +26,15 @@ describe('InMemoryStorage', () => {
       storage[KEY] = VALUE;
       expect(storage.getItem(KEY)).to.eq(VALUE);
     });
+
+    it('Set a property on the storage instead of one in the storage', () => {
+      const storage = new InMemoryStorage();
+      const newFunc = (key: string, value: string) => {
+        return;
+      };
+      storage["setItem"] = newFunc;
+      expect(storage["setItem"]).to.eq(newFunc);
+    });
   });
 
   describe('getItem', () => {
@@ -51,6 +60,11 @@ describe('InMemoryStorage', () => {
     it('Returns null for a key that is not set.', () => {
       const storage = new InMemoryStorage();
       expect(storage["null"]).to.be.null;
+    });
+
+    it('Returns a property on the storage instead of one in the storage', () => {
+      const storage = new InMemoryStorage();
+      expect(storage["setItem"]).to.eq(storage.setItem);
     });
   });
 

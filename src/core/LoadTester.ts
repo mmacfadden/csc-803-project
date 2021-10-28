@@ -212,7 +212,7 @@ export class LoadTester {
     const averageWriteTimeMs = cumulativeWriteTime / entryCount;
     const averageReadTimeMs = cumulativeReadTime / entryCount;
 
-    const result  =  {
+    const result = {
       moduleId: this._encModule.moduleId(),
       entryCount,
       totalTimeMs,

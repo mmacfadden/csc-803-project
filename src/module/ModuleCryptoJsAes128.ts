@@ -24,7 +24,7 @@ export class ModuleCryptoJsAes128 extends SymmetricEncryptionBasedModule {
   constructor(secret: string) {
     super(ModuleCryptoJsAes128.MODULE_ID, secret);
     const salt = CryptoJS.lib.WordArray.random(128 / 8);
-    this._iv  = CryptoJS.enc.Hex.parse("101112131415161718191a1b1c1d1e1f");
+    this._iv = CryptoJS.enc.Hex.parse("101112131415161718191a1b1c1d1e1f");
     this._derivedKey = CryptoJS.PBKDF2(secret, salt, {keySize: 128 / 32});
   }
 

@@ -1,11 +1,10 @@
 import {expect} from 'chai';
 import {EncryptedStorage, InMemoryStorage, ModuleClearText} from '../../src/';
 
-const KEY = "k";
-const VALUE = "value";
-const module = new ModuleClearText();
-
 describe('EncryptedStorage', () => {
+  const KEY = "k";
+  const VALUE = "value";
+  const module = new ModuleClearText();
 
   describe('constructor', () => {
     it('Newly constructed storage should be empty', () => {
@@ -88,5 +87,16 @@ describe('EncryptedStorage', () => {
       await storage.setItem(KEY, VALUE);
       expect(storage.length).to.eq(1);
     });
+  });
+
+  describe('key', () => {
+    it('Newly constructed storage has zero length', () => {
+      const memStore = new InMemoryStorage();
+      const storage = new EncryptedStorage(module, memStore);
+      storage.setItem("key1", "v1");
+      storage.setItem("key2", "v2");
+      expect(storage.key(0)).to.eq(memStore.key(0));
+    });
+
   });
 });

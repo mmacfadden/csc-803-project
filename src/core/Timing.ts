@@ -13,7 +13,7 @@ export class Timing {
   static now(): number {
     if (globalThis.performance !== undefined) {
       return performance.now();
-    } else if(typeof perf_hooks !== undefined) {
+    } else if (typeof perf_hooks !== undefined) {
       return perf_hooks.performance.now();
     } else {
       return Date.now();
