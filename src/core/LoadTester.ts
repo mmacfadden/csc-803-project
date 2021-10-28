@@ -31,6 +31,10 @@ export class LoadTester {
    *
    * @param masterPassword
    *   The master password to use to encrypt the key.
+   * @param entryCount
+   *   The number of entries to read and write to Storage.
+   * @param valueSize
+   *   The number of characters in the value to store.
    * @param storage
    *   The HTML5 Storage object to use to store data.
    * @param quiet
@@ -41,6 +45,8 @@ export class LoadTester {
    * @returns A string array of all test results in CSV format.
    */
   public static async testAll(masterPassword: string,
+                              entryCount: number,
+                              valueSize: number,
                               storage: Storage,
                               quiet: boolean,
                               hooks?: ILoadTesterHooks): Promise<ILoadTestResult[]> {
@@ -57,7 +63,7 @@ export class LoadTester {
       {moduleId: ModuleTwoFish.MODULE_ID, secret: encryption_secret},
     ];
 
-    return LoadTester.runTests(masterPassword, storage, configs, quiet, hooks);
+    return LoadTester.runTests(masterPassword, entryCount, valueSize, storage, configs, quiet, hooks);
   }
 
   /**
@@ -65,6 +71,10 @@ export class LoadTester {
    *
    * @param masterPassword
    *   The master password to use to encrypt the key.
+   * @param entryCount
+   *   The number of entries to read and write to Storage.
+   * @param valueSize
+   *   The number of characters in the value to store.
    * @param storage
    *   The HTML5 Storage object to use to store data.
    * @param encryptionConfigs
@@ -77,6 +87,8 @@ export class LoadTester {
    * @returns A string array of all test results in CSV format.
    */
   public static async runTests(masterPassword: string,
+                               entryCount: number,
+                               valueSize: number,
                                storage: Storage,
                                encryptionConfigs: IEncryptionConfig[],
                                quiet: boolean,
@@ -92,7 +104,8 @@ export class LoadTester {
 
     const results: ILoadTestResult[] = [];
 
-    for await (let result of LoadTester._generateTests(masterPassword, storage, encryptionConfigs, quiet, hooks)) {
+    for await (let result of LoadTester._generateTests(
+      masterPassword, entryCount, valueSize, storage, encryptionConfigs, quiet, hooks)) {
       results.push(result);
     }
 
@@ -108,6 +121,10 @@ export class LoadTester {
    *
    * @param masterPassword
    *   The master password to use to encrypt the key.
+   * @param entryCount
+   *   The number of entries to read and write to Storage.
+   * @param valueSize
+   *   The number of characters in the value to store.
    * @param storage
    *   The HTML5 Storage object to use to store data.
    * @param encryptionConfigs
@@ -120,6 +137,8 @@ export class LoadTester {
    * @returns A generator of strings that are the CSV output for each test.
    */
   private static async* _generateTests(masterPassword: string,
+                                       entryCount: number,
+                                       valueSize: number,
                                        storage: Storage,
                                        encryptionConfigs: IEncryptionConfig[],
                                        quiet: boolean,
@@ -127,7 +146,7 @@ export class LoadTester {
     for (const i in encryptionConfigs) {
       const config = encryptionConfigs[i];
       const tester = new LoadTester(config, masterPassword, storage);
-      yield tester.loadTest(100, 100, quiet, hooks);
+      yield tester.loadTest(entryCount, valueSize, quiet, hooks);
     }
   }
 
@@ -151,6 +170,18 @@ export class LoadTester {
     password: string,
     storage: Storage
   ) {
+    if (!config) {
+      throw new Error("config must be defined");
+    }
+
+    if (!password) {
+      throw new Error("password must be a non-empty string");
+    }
+
+    if (!storage) {
+      throw new Error("storage must be defined");
+    }
+
     this._keyManager = new EncryptionConfigManager(storage);
     this._keyManager.setConfig(config, password);
 
@@ -176,6 +207,14 @@ export class LoadTester {
                         valueSize: number,
                         quiet: boolean,
                         hooks?: ILoadTesterHooks): Promise<ILoadTestResult> {
+    if (entryCount <= 0) {
+      throw new Error("entryCount must be > 0");
+    }
+
+    if (valueSize <= 0) {
+      throw new Error("valueSize must be > 0");
+    }
+
     if (hooks) {
       hooks.testStarted(this._encModule.moduleId());
     }

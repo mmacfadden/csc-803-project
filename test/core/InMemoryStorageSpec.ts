@@ -108,4 +108,14 @@ describe('InMemoryStorage', () => {
       expect(storage.length).to.eq(1);
     });
   });
+
+  describe('key', () => {
+    it('returns a key', () => {
+      const storage = new InMemoryStorage();
+      storage.setItem("k1", "v");
+      storage.setItem("k2", "v");
+      expect(storage.key(0)).to.eq("k1");
+      expect(storage.key(1)).to.eq("k2");
+    });
+  });
 });

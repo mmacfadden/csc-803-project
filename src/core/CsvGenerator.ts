@@ -15,11 +15,22 @@ export class CsvGenerator {
   ];
 
   public static generateCsv(results: ILoadTestResult[]): string {
+    if (!Array.isArray(results)) {
+      throw new Error("results must be an array");
+    }
+
     const data = results
       .map(row => {
         const {moduleId, entryCount, totalTimeMs, averageReadTimeMs, averageWriteTimeMs, averageRearWriteTimeMs} = row
-        return [moduleId, entryCount, totalTimeMs, averageReadTimeMs, averageWriteTimeMs, averageRearWriteTimeMs].join(",");
-      })
+        return [
+          moduleId,
+          entryCount,
+          totalTimeMs,
+          averageReadTimeMs,
+          averageWriteTimeMs,
+          averageRearWriteTimeMs
+        ].join(",");
+      });
 
     data.unshift(CsvGenerator.HEADERS.join(","));
 
