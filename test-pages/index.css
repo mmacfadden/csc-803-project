@@ -28,37 +28,37 @@ button.btn {
 
 #status {
     border: 1px solid darkgray;
-    height: 300px;
-    overflow: auto;
     font-size: 12px;
+    min-height: 1em;
+    padding: 4px;
 }
 
 #status .list-group-item {
     padding: .1rem .5rem;
 }
 
-#results {
+#results-csv {
     display: none;
 }
 
-#results-table {
+table {
     font-size: 12px;
     margin-bottom: 10px;
     border: 1px solid darkgray;
 }
 
-#results-table thead td {
+table thead th {
     font-weight: bold;
     text-align: center;
 }
 
-#results-table td {
+table td, table th {
     border-bottom: 1px solid darkgray;
     border-right: 1px solid darkgray;
     padding: 2px 5px;
 }
 
-#results-table td.number {
+table td.number {
     text-align: right;
 }
 

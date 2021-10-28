@@ -1,4 +1,4 @@
-import {LoadTester} from "../src/";
+import {LoadTester, CsvGenerator} from "../src/";
 import {LocalStorage} from "node-localstorage";
 import {Crypto} from "node-webcrypto-ossl";
 
@@ -16,7 +16,7 @@ const masterPassword = "password";
 LoadTester
   .testAll(masterPassword, storage, false)
   .then(results => {
-    const data = results.map(row => row.join(",")).join("\n");
-    console.log(data);
+    const csv = CsvGenerator.generateCsv(results);
+    console.log(csv);
   })
   .catch(e => console.error(e));

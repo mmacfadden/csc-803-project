@@ -17,6 +17,7 @@ import {
 import {RandomStringGenerator} from "./RandomStringGenerator";
 import {Timing} from "./Timing";
 import {ILoadTesterHooks} from "./ILoadTesterHooks";
+import {ILoadTestResult} from "./ILoadTestResult";
 
 
 /**
@@ -42,7 +43,7 @@ export class LoadTester {
   public static async testAll(masterPassword: string,
                               storage: Storage,
                               quiet: boolean,
-                              hooks?: ILoadTesterHooks): Promise<any[][]> {
+                              hooks?: ILoadTesterHooks): Promise<ILoadTestResult[]> {
     const encryption_secret = RandomStringGenerator.generate(200);
     const configs: IEncryptionConfig[] = [
       {moduleId: ModuleClearText.MODULE_ID, secret: encryption_secret},
@@ -79,13 +80,17 @@ export class LoadTester {
                                storage: Storage,
                                encryptionConfigs: IEncryptionConfig[],
                                quiet: boolean,
-                               hooks?: ILoadTesterHooks): Promise<any[][]> {
+                               hooks?: ILoadTesterHooks): Promise<ILoadTestResult[]> {
+
+    if (hooks) {
+      hooks.testingStarted(encryptionConfigs);
+    }
 
     if (!quiet) {
       console.log("Storage Encryption Load Testing Started");
     }
 
-    const results: any[][] = [LoadTester._RESULT_HEADERS];
+    const results: ILoadTestResult[] = [];
 
     for await (let result of LoadTester._generateTests(masterPassword, storage, encryptionConfigs, quiet, hooks)) {
       results.push(result);
@@ -97,18 +102,6 @@ export class LoadTester {
 
     return results;
   }
-
-  /**
-   * The header line for the CSV output.
-   */
-  private static _RESULT_HEADERS = [
-    "Encryption Module",
-    "Entry Count",
-    "Cumulative Time (ms)",
-    "Average Read/Write Time (ms)",
-    "Average Write Time (ms)",
-    "Average Read Time (ms)"
-  ];
 
   /**
    * An async generator helper that generates the set of test cases.
@@ -130,7 +123,7 @@ export class LoadTester {
                                        storage: Storage,
                                        encryptionConfigs: IEncryptionConfig[],
                                        quiet: boolean,
-                                       hooks?: ILoadTesterHooks): AsyncIterableIterator<any[]> {
+                                       hooks?: ILoadTesterHooks): AsyncIterableIterator<ILoadTestResult> {
     for (const i in encryptionConfigs) {
       const config = encryptionConfigs[i];
       const tester = new LoadTester(config, masterPassword, storage);
@@ -182,7 +175,7 @@ export class LoadTester {
   public async loadTest(entryCount: number,
                         valueSize: number,
                         quiet: boolean,
-                        hooks?: ILoadTesterHooks): Promise<any[]> {
+                        hooks?: ILoadTesterHooks): Promise<ILoadTestResult> {
     if (hooks) {
       hooks.testStarted(this._encModule.moduleId());
     }
@@ -214,15 +207,24 @@ export class LoadTester {
       }
     }
 
-    const cumulativeTime = cumulativeWriteTime + cumulativeReadTime;
-    const averageTime = cumulativeTime / entryCount;
-    const averageWriteTime = cumulativeWriteTime / entryCount;
-    const averageReadTime = cumulativeReadTime / entryCount;
+    const totalTimeMs = cumulativeWriteTime + cumulativeReadTime;
+    const averageRearWriteTimeMs = totalTimeMs / entryCount;
+    const averageWriteTimeMs = cumulativeWriteTime / entryCount;
+    const averageReadTimeMs = cumulativeReadTime / entryCount;
+
+    const result  =  {
+      moduleId: this._encModule.moduleId(),
+      entryCount,
+      totalTimeMs,
+      averageRearWriteTimeMs,
+      averageWriteTimeMs,
+      averageReadTimeMs
+    };
 
     if (hooks) {
-      hooks.testFinished(this._encModule.moduleId());
+      hooks.testFinished(result);
     }
 
-    return [this._encModule.moduleId(), entryCount, cumulativeTime, averageTime, averageWriteTime, averageReadTime];
+    return result;
   }
 }

@@ -1,29 +1,37 @@
-const {LoadTester} = EncryptedStorage;
+const {LoadTester, CsvGenerator} = EncryptedStorage;
 
 //
 // UI Elements
 //
 const status = $("#status");
-const resultsTextArea = $("#results");
-const runButton = $("#run");
-const downloadButton = $("#download");
 
-const resultsHeader = $("#results-header");
-const resultsBody = $("#results-body");
+const runButton = $("#run");
+const downloadButton = $("#downTiminload");
+
+const resultTable = $("#results-table");
+const resultsTextArea = $("#results-csv");
 
 // Tracks the current test's status item.
-let currentTest = null;
+let inProgressRow = null;
+let testCounter = 0;
+let totalTests = 0;
 
 // Used to be notified of test progress.
 const hooks = {
-  testStarted(module) {
-    currentTest = $(`<li class="list-group-item">Testing "${module}"...</li>`);
-    status.append(currentTest);
-    scrollToBottomOfStatus();
+  testingStarted(encryptionConfigs){
+    totalTests = encryptionConfigs.length;
+    testCounter = 0;
   },
-  testFinished(module) {
-    currentTest.append(" Done");
-    currentTest = null;
+  testStarted(module) {
+    testCounter++;
+    status.html(`Test ${testCounter} of ${totalTests}:  ${module}`);
+    inProgressRow = $(`<tr><td>${module}"</td><td colspan="5">In Progress</td></tr>`);
+    resultTable.append(inProgressRow);
+  },
+  testFinished(result) {
+    inProgressRow.remove();
+    appendResultRow(result);
+    inProgressRow = null;
   }
 }
 
@@ -32,8 +40,7 @@ const hooks = {
  */
 async function loadTest() {
   status.empty();
-  resultsHeader.empty();
-  resultsBody.empty();
+  resultTable.empty();
   resultsTextArea.val("");
 
   runButton.prop("disabled", true);
@@ -41,43 +48,44 @@ async function loadTest() {
 
   try {
     const results = await LoadTester.testAll("password", localStorage, true, hooks);
-    currentTest = $(`<li class="list-group-item">All tests complete.</li>`);
-    scrollToBottomOfStatus();
-    
-    const data = results.map(row => row.join(",")).join("\n");
-    resultsTextArea.val(data);
 
-    appendDataRow(resultsHeader, results.shift());
-    results.forEach(rowData => appendDataRow(resultsBody, rowData));
+    const csvData = CsvGenerator.generateCsv(results);
+    resultsTextArea.val(csvData);
 
     runButton.prop("disabled", false);
     downloadButton.prop("disabled", false);
+
+    status.html(`All tests complete.`);
   } catch (e) {
     runButton.prop("disabled", false);
     downloadButton.prop("disabled", true);
-    status.append($(`<div>Error (see console for more details): ${e.message}</div>`));
+    status.innerHTML = `Error (see console for more details): ${e.message}`;
     console.log(e);
   }
 }
 
-function appendDataRow(parent, data) {
+/**
+ * Adds a new test result to the result table.
+ */
+function appendResultRow(result) {
   const row = $("<tr>");
 
-  data.forEach(val => {
-    if (typeof val === "number") {
-      val = Math.round(1000 * val) / 1000;
-    }
-    row.append($(`<td class="${typeof val}">${val}</td>`))
-  })
-  parent.append(row);
+  row.append($(`<td class="string">${result.moduleId}</td>`));
+  row.append($(`<td class="string">${result.entryCount}</td>`));
+  row.append($(`<td class="number">${round(result.totalTimeMs, 3)}</td>`));
+  row.append($(`<td class="number">${round(result.averageReadTimeMs, 3)}</td>`));
+  row.append($(`<td class="number">${round(result.averageWriteTimeMs, 3)}</td>`));
+  row.append($(`<td class="number">${round(result.averageRearWriteTimeMs, 3)}</td>`));
+
+  resultTable.append(row);
 }
 
 /**
- * A helper method the cases the status <ul> to scroll to
- * the bottom to show the last item added.
+ * A helper method to round a number to a specific number of digits.
  */
-function scrollToBottomOfStatus() {
-  status.scrollTop(status[0].scrollHeight);
+function round(value, decimals) {
+  const multiplier = Math.pow(10, decimals);
+  return Math.round(multiplier * value) / multiplier;
 }
 
 /**
