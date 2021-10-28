@@ -15,7 +15,7 @@ storage.clear();
 const masterPassword = "password";
 
 LoadTester
-  .testAll(masterPassword, storage, false)
+  .testAll(masterPassword, 100, 100, storage, false)
   .then(results => {
     const csv = CsvGenerator.generateCsv(results);
     console.log(csv);
