@@ -23,5 +23,6 @@ module.exports = {
   },
   plugins: [],
   externals: {
+    "perf_hooks": "perf_hooks"
   }
 };
