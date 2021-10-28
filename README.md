@@ -47,6 +47,16 @@ The codebase is heavily unit tested to ensure the correctness of each compilatio
 npm run test
 ```
 
+The testing task will show the results of the test and the unit test coverage. Current test coverage is well over 90% coverage giving high confidence in the correctness of the codebase.
+
+```shell
+|----------------------|---------|----------|---------|---------|
+| File                 | % Stmts | % Branch | % Funcs | % Lines | 
+|----------------------|---------|----------|---------|---------|
+| All files            |   98.44 |    92.64 |     100 |   98.43 |
+|----------------------|---------|----------|---------|---------|   
+```
+
 # Command Line Test for NodeJS
 ```shell
 npm run load

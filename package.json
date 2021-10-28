@@ -8,7 +8,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' mocha -r ts-node/register 'test/**/*Spec.ts'",
+    "test": "env TS_NODE_COMPILER_OPTIONS='{\"module\": \"commonjs\" }' nyc mocha -r ts-node/register 'test/**/*Spec.ts'",
     "load": "node -r ts-node/register test-scripts/index.ts",
     "build": "webpack",
     "clean": "rimraf .key_storage .localStorage dist"
