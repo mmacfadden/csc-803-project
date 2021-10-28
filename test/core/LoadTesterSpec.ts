@@ -3,7 +3,15 @@ import chaiAsPromised from 'chai-as-promised';
 const {expect} = chai;
 chai.use(chaiAsPromised);
 
-import {LoadTester, InMemoryStorage, IEncryptionConfig, ModuleClearText} from '../../src/';
+import {LoadTester, InMemoryStorage, IEncryptionConfig, ModuleClearText, ILoadTestResult} from '../../src/';
+import {ILoadTesterHooks} from "../../src/core/ILoadTesterHooks";
+import {Crypto} from "node-webcrypto-ossl";
+
+if (globalThis.crypto === undefined) {
+  globalThis.crypto = new Crypto({
+    directory: ".key_storage"
+  });
+}
 
 describe('LoadTester', () => {
   const PASSWORD = "password";
@@ -28,7 +36,6 @@ describe('LoadTester', () => {
     });
 
     it('throws if storage is not set', () => {
-      const storage = new InMemoryStorage();
       expect( () => new LoadTester(CONFIG, PASSWORD, undefined as any)).to.throw();
     });
 
@@ -63,8 +70,43 @@ describe('LoadTester', () => {
     it('returns the correct number of results', async () => {
       const storage = new InMemoryStorage();
       const CONFIGS = [CONFIG, CONFIG];
-      const results = await LoadTester.runTests(PASSWORD, ENTRY_COUNT, VALUE_SIZE, storage, CONFIGS, true);
+      const results = await LoadTester.runTests(
+        PASSWORD, ENTRY_COUNT, VALUE_SIZE, storage, CONFIGS, true);
       expect(results.length).to.eq(CONFIGS.length);
     });
+
+    it('works in non-quiet mode', async () => {
+      const storage = new InMemoryStorage();
+      const CONFIGS = [CONFIG, CONFIG];
+      await LoadTester.runTests(
+        PASSWORD, ENTRY_COUNT, VALUE_SIZE, storage, CONFIGS, false);
+
+    });
+
+    it('hooks are properly called', async () => {
+      const storage = new InMemoryStorage();
+      const CONFIGS = [CONFIG];
+      const hooks: ILoadTesterHooks = {
+        testFinished(result: ILoadTestResult): void {
+          expect(result.moduleId).to.eq(CONFIG.moduleId);
+        }, testStarted(module: string): void {
+          expect(module).to.eq(CONFIG.moduleId);
+        }, testingStarted(configs: IEncryptionConfig[]): void {
+          expect(configs).to.deep.eq(CONFIGS);
+        }
+      }
+      const results = await LoadTester.runTests(
+        PASSWORD, ENTRY_COUNT, VALUE_SIZE, storage, CONFIGS, true, hooks);
+      expect(results.length).to.eq(CONFIGS.length);
+    });
+  });
+
+  describe('testAll', () => {
+    it('returns the correct number of results', async () => {
+      const storage = new InMemoryStorage();
+      const results = await LoadTester.testAll(
+        PASSWORD, 1, 10, storage, false);
+      expect(results.length).to.eq(9);
+    }).timeout(5000);
   });
 });
