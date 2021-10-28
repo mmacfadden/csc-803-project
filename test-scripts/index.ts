@@ -1,4 +1,4 @@
-import {LoadTester, CsvGenerator} from "../src/";
+import {LoadTester, CsvGenerator, InMemoryStorage} from "../src/";
 import {LocalStorage} from "node-localstorage";
 import {Crypto} from "node-webcrypto-ossl";
 
@@ -8,7 +8,8 @@ if (globalThis.crypto === undefined) {
   });
 }
 
-const storage = new LocalStorage("./.localStorage/");
+// const storage = new LocalStorage("./.localStorage/");
+const storage = new InMemoryStorage();
 storage.clear();
 
 const masterPassword = "password";
@@ -18,5 +19,7 @@ LoadTester
   .then(results => {
     const csv = CsvGenerator.generateCsv(results);
     console.log(csv);
+
+    console.table(results);
   })
   .catch(e => console.error(e));

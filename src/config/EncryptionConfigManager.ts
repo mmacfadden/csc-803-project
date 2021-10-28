@@ -24,6 +24,15 @@ export class EncryptionConfigManager {
   }
 
   /**
+   * Determines if the config is currently set.
+   *
+   * @returns True if the config is set, false otherwise.
+   */
+  public isConfigSet(): boolean {
+    return this._storage.getItem(EncryptionConfigManager._CONFIG_PROPERTY) !== null;
+  }
+
+  /**
    * Changes the password for the existing configuration.
    *
    * @param currentPassword
@@ -60,7 +69,7 @@ export class EncryptionConfigManager {
    */
   public getConfig(password: string): IEncryptionConfig {
     if (!password) {
-      throw new Error("The password and newPassword must be non-empty strings");
+      throw new Error("The password must be a non-empty string");
     }
 
     const encryptedKeyData = this._storage.getItem(EncryptionConfigManager._CONFIG_PROPERTY);
@@ -88,6 +97,14 @@ export class EncryptionConfigManager {
    *   The password to use to encrypt the configuration.
    */
   public setConfig(config: IEncryptionConfig, password: string): void {
+    if (!config) {
+      throw new Error("Config must be set");
+    }
+
+    if (!password) {
+      throw new Error("The password must be a non-empty string");
+    }
+
     const configData = JSON.stringify(config, null, "");
     const encryptedKeyData = CryptoJS.AES.encrypt(configData, password).toString();
     this._storage.setItem(EncryptionConfigManager._CONFIG_PROPERTY, encryptedKeyData);
