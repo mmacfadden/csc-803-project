@@ -1,5 +1,4 @@
 import {WebStorageEncryptionModule} from "../module/";
-import * as lz from "lz-string";
 
 /**
  * Implements an encrypted facade for the HTML5 Storage API. The API
@@ -9,14 +8,11 @@ import * as lz from "lz-string";
 export class EncryptedStorage {
   private readonly _encryptionModule: WebStorageEncryptionModule;
   private readonly _storage: Storage;
-  private readonly _compress: boolean;
 
   constructor(encryptionModule: WebStorageEncryptionModule,
-              storage: Storage,
-              compress: boolean = false) {
+              storage: Storage) {
     this._encryptionModule = encryptionModule;
     this._storage = storage;
-    this._compress = compress;
   }
 
   public get length(): number {
@@ -28,29 +24,17 @@ export class EncryptedStorage {
   }
 
   public async setItem(key: string, value: string): Promise<void> {
-    if (this._compress) {
-      // value = LZUTF8.compress(value, {outputEncoding: "StorageBinaryString"});
-      value = lz.compressToUTF16(value);
-    }
-
     let encrypted = await this._encryptionModule.encrypt(value);
-
     this._storage.setItem(key, encrypted);
   }
 
   public async getItem(key: string): Promise<string | null> {
     const raw = this._storage.getItem(key);
     if (raw) {
-      let value = await this._encryptionModule.decrypt(raw);
-      if (this._compress) {
-        // value = LZUTF8.decompress(value, {inputEncoding: "StorageBinaryString", outputEncoding: "String"});
-        value = lz.decompressFromUTF16(value) as string;
-      }
-      return value;
+      return await this._encryptionModule.decrypt(raw);
     } else {
       return null;
     }
-
   }
 
   public key(index: number): string | null {

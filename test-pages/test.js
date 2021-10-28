@@ -8,6 +8,9 @@ const resultsTextArea = $("#results");
 const runButton = $("#run");
 const downloadButton = $("#download");
 
+const resultsHeader = $("#results-header");
+const resultsBody = $("#results-body");
+
 // Tracks the current test's status item.
 let currentTest = null;
 
@@ -29,6 +32,8 @@ const hooks = {
  */
 async function loadTest() {
   status.empty();
+  resultsHeader.empty();
+  resultsBody.empty();
   resultsTextArea.val("");
 
   runButton.prop("disabled", true);
@@ -38,8 +43,12 @@ async function loadTest() {
     const results = await LoadTester.testAll("password", localStorage, true, hooks);
     currentTest = $(`<li class="list-group-item">All tests complete.</li>`);
     scrollToBottomOfStatus();
-    const data = results.join("\n");
+    
+    const data = results.map(row => row.join(",")).join("\n");
     resultsTextArea.val(data);
+
+    appendDataRow(resultsHeader, results.shift());
+    results.forEach(rowData => appendDataRow(resultsBody, rowData));
 
     runButton.prop("disabled", false);
     downloadButton.prop("disabled", false);
@@ -49,6 +58,18 @@ async function loadTest() {
     status.append($(`<div>Error (see console for more details): ${e.message}</div>`));
     console.log(e);
   }
+}
+
+function appendDataRow(parent, data) {
+  const row = $("<tr>");
+
+  data.forEach(val => {
+    if (typeof val === "number") {
+      val = Math.round(1000 * val) / 1000;
+    }
+    row.append($(`<td class="${typeof val}">${val}</td>`))
+  })
+  parent.append(row);
 }
 
 /**

@@ -11,31 +11,6 @@ body {
     padding: 10px;
 }
 
-#main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-#status {
-    border: 1px solid darkgray;
-    flex: 0.5;
-    overflow: auto;
-
-    font-size: 12px;
-}
-
-#status .list-group-item {
-    padding: .1rem .5rem;
-}
-
-#results {
-    flex: 0.5;
-    width: 100%;
-    font-size: 12px;
-    margin-bottom: 10px;
-}
-
 h1 {
     margin-top: 10px;
     font-size: 18px;
@@ -44,3 +19,46 @@ h1 {
 button.btn {
     font-size: 14px
 }
+
+#main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+#status {
+    border: 1px solid darkgray;
+    height: 300px;
+    overflow: auto;
+    font-size: 12px;
+}
+
+#status .list-group-item {
+    padding: .1rem .5rem;
+}
+
+#results {
+    display: none;
+}
+
+#results-table {
+    font-size: 12px;
+    margin-bottom: 10px;
+    border: 1px solid darkgray;
+}
+
+#results-table thead td {
+    font-weight: bold;
+    text-align: center;
+}
+
+#results-table td {
+    border-bottom: 1px solid darkgray;
+    border-right: 1px solid darkgray;
+    padding: 2px 5px;
+}
+
+#results-table td.number {
+    text-align: right;
+}
+

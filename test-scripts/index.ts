@@ -2,10 +2,10 @@ import {LoadTester} from "../src/";
 import {LocalStorage} from "node-localstorage";
 import {Crypto} from "node-webcrypto-ossl";
 
-if (global.crypto === undefined) {
-    global.crypto = new Crypto({
-        directory: ".key_storage"
-    });
+if (globalThis.crypto === undefined) {
+  globalThis.crypto = new Crypto({
+    directory: ".key_storage"
+  });
 }
 
 const storage = new LocalStorage("./.localStorage/");
@@ -16,6 +16,7 @@ const masterPassword = "password";
 LoadTester
   .testAll(masterPassword, storage, false)
   .then(results => {
-      console.log(results.join("\n"));
+    const data = results.map(row => row.join(",")).join("\n");
+    console.log(data);
   })
   .catch(e => console.error(e));

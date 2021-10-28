@@ -1,6 +1,7 @@
 {
   // This is an alias to @tsconfig/node12: https://github.com/tsconfig/bases
   "extends": "ts-node/node12/tsconfig.json",
+
   // Most ts-node options can be specified here using their programmatic names.
   "ts-node": {
     // It is faster to skip typechecking.
@@ -11,14 +12,12 @@
       // compilerOptions specified here will override those declared below,
       // but *only* in ts-node.  Useful if you want ts-node and tsc to use
       // different options with a single tsconfig.json.
-      "esModuleInterop": true
+      "esModuleInterop": true,
+      "lib": ["DOM", "ES7"]
     }
   },
   "compilerOptions": {
-    "lib": [
-      "DOM",
-      "ES7"
-    ],
+    "lib": ["DOM", "ES7"],
     "esModuleInterop": true
     // typescript options here
   },
