@@ -1,4 +1,5 @@
-import {WebStorageEncryptionModule} from "../module/";
+import {EncryptionModuleFactory, WebStorageEncryptionModule} from "../module/";
+import {IEncryptionConfig} from "../config";
 
 /**
  * Implements an encrypted facade for the HTML5 Storage API. The API
@@ -6,6 +7,11 @@ import {WebStorageEncryptionModule} from "../module/";
  * data will be encrypted before sent to the underlying Storage.
  */
 export class EncryptedStorage {
+  public static create(config: IEncryptionConfig, storage: Storage) {
+    const module = EncryptionModuleFactory.createModule(config);
+    return new EncryptedStorage(module, storage);
+  }
+
   private readonly _encryptionModule: WebStorageEncryptionModule;
   private readonly _storage: Storage;
 
@@ -13,6 +19,14 @@ export class EncryptedStorage {
               storage: Storage) {
     this._encryptionModule = encryptionModule;
     this._storage = storage;
+  }
+
+
+  public moduleId(): string {
+    return this._encryptionModule.moduleId();
+  }
+  public async init(): Promise<void> {
+    return this._encryptionModule.init();
   }
 
   public get length(): number {

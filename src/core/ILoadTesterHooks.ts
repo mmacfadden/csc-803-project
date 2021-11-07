@@ -3,7 +3,7 @@
  * to inform consumers on the execution of load tests.
  */
 import {ILoadTestResult} from "./ILoadTestResult";
-import {IEncryptionConfig} from "../config";
+import {ILoadTestConfig} from "./ILoadTestConfig";
 
 export interface ILoadTesterHooks {
   /**
@@ -11,7 +11,7 @@ export interface ILoadTesterHooks {
    * @param testCount
    *   The number of tests to run.
    */
-  testingStarted: (configs: IEncryptionConfig[]) => void;
+  testingStarted: (configs: ILoadTestConfig[]) => void;
 
 
   /**

@@ -16,10 +16,8 @@ const storage = args["storage"] === "disk" ?
 
 storage.clear();
 
-const masterPassword = "password";
-
 LoadTester
-  .testAll(masterPassword, 10000, 100, storage, false)
+  .testAll( 100, 100, storage, false)
   .then(results => {
     const csvFile = args["csv"];
     if (csvFile) {

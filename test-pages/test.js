@@ -18,14 +18,14 @@ let totalTests = 0;
 
 // Used to be notified of test progress.
 const hooks = {
-  testingStarted(encryptionConfigs){
-    totalTests = encryptionConfigs.length;
+  testingStarted(testConfigs){
+    totalTests = testConfigs.length;
     testCounter = 0;
   },
   testStarted(module) {
     testCounter++;
     status.html(`Test ${testCounter} of ${totalTests}:  ${module}`);
-    inProgressRow = $(`<tr><td>${module}"</td><td colspan="5">In Progress</td></tr>`);
+    inProgressRow = $(`<tr><td>${module}</td><td colspan="5">In Progress</td></tr>`);
     resultTable.append(inProgressRow);
   },
   testFinished(result) {
@@ -48,7 +48,7 @@ async function loadTest() {
 
   try {
     const results = await LoadTester.testAll(
-        "password", 100, 100, localStorage, true, hooks);
+        100, 100, localStorage, true, hooks);
 
     const csvData = CsvGenerator.generateCsv(results);
     resultsTextArea.val(csvData);

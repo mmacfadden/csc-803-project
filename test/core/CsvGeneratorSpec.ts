@@ -20,6 +20,8 @@ describe('CsvGenerator', () => {
         averageWriteTimeMs: 1,
         averageRearWriteTimeMs: 1,
         averageReadTimeMs: 1,
+        avgWriteThroughputKbps: 10,
+        avgReadThroughputKbps: 20
       }
       const results = [row, row];
       const result = CsvGenerator.generateCsv(results);
