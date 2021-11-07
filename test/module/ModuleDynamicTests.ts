@@ -6,8 +6,11 @@ import {
   ModuleCryptoJsAes128,
   ModuleCryptoJsAes256,
   ModuleCryptoJsTripleDes,
+  ModuleNodeWebCryptoAes128,
+  ModuleNodeWebCryptoAes256,
   ModuleTripleSec,
   ModuleTwoFish,
+  ModuleWebCryptoAes128,
   ModuleWebCryptoAes256,
   ModuleWebCryptoAes256SaltedKey
 } from '../../src/';
@@ -19,7 +22,10 @@ const MODULES = [
   new ModuleCryptoJsTripleDes("secret"),
   new ModuleTripleSec("secret"),
   new ModuleWebCryptoAes256SaltedKey("secret"),
+  new ModuleWebCryptoAes128("secret"),
   new ModuleWebCryptoAes256("secret"),
+  new ModuleNodeWebCryptoAes128("secret"),
+  new ModuleNodeWebCryptoAes256("secret"),
   new ModuleBlowfish("secret"),
   new ModuleTwoFish("secret"),
   new ModuleClearText()
@@ -40,6 +46,6 @@ describe('EncryptionModuleFactory', () => {
       const cypherText = await module.encrypt(plainText);
       const decrypted = await module.decrypt(cypherText);
       expect(decrypted).to.eq(plainText);
-    });
+    }).timeout(10000);
   });
 });

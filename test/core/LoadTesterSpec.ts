@@ -6,10 +6,16 @@ import {
   ILoadTesterHooks,
   ILoadTestResult,
   InMemoryStorage,
-  LoadTester, ModuleBlowfish,
-  ModuleClearText, ModuleCryptoJsAes128, ModuleCryptoJsAes256, ModuleCryptoJsTripleDes,
+  LoadTester,
+  ModuleBlowfish,
+  ModuleClearText,
+  ModuleCryptoJsAes128,
+  ModuleCryptoJsAes256,
+  ModuleCryptoJsTripleDes,
   ModuleNodeWebCryptoAes128,
-  ModuleNodeWebCryptoAes256, ModuleTripleSec, ModuleTwoFish,
+  ModuleNodeWebCryptoAes256,
+  ModuleTripleSec,
+  ModuleTwoFish,
   ModuleWebCryptoAes128,
   ModuleWebCryptoAes256,
   RandomStringGenerator
@@ -133,6 +139,6 @@ describe('LoadTester', () => {
       const results = await LoadTester.testEncryptionConfigs(
         encryptionConfigs,1, 10, storage, false);
       expect(results.length).to.eq(11);
-    }).timeout(5000);
+    }).timeout(20000);
   });
 });
