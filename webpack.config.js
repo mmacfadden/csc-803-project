@@ -23,6 +23,6 @@ module.exports = {
   },
   plugins: [],
   externals: {
-    "perf_hooks": "perf_hooks"
+    "node-webcrypto-ossl": "node-webcrypto-ossl"
   }
 };

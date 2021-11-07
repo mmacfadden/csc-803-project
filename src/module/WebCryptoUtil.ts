@@ -1,5 +1,5 @@
 export class WebCryptoUtil {
-  public static async deriveKey(password: string, salt: Uint8Array, keyLength: number): Promise<CryptoKey> {
+  public static async deriveKey(crypto: Crypto, password: string, salt: Uint8Array, keyLength: number): Promise<CryptoKey> {
     const passwordAsBytes = Buffer.from(password, "utf-8");
     const passwordKey: CryptoKey = await crypto.subtle.importKey(
       "raw",

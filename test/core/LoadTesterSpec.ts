@@ -6,8 +6,13 @@ import {
   ILoadTesterHooks,
   ILoadTestResult,
   InMemoryStorage,
-  LoadTester,
-  ModuleClearText
+  LoadTester, ModuleBlowfish,
+  ModuleClearText, ModuleCryptoJsAes128, ModuleCryptoJsAes256, ModuleCryptoJsTripleDes,
+  ModuleNodeWebCryptoAes128,
+  ModuleNodeWebCryptoAes256, ModuleTripleSec, ModuleTwoFish,
+  ModuleWebCryptoAes128,
+  ModuleWebCryptoAes256,
+  RandomStringGenerator
 } from '../../src/';
 import {Crypto} from "node-webcrypto-ossl";
 
@@ -109,8 +114,25 @@ describe('LoadTester', () => {
   describe('testAll', () => {
     it('returns the correct number of results', async () => {
       const storage = new InMemoryStorage();
-      const results = await LoadTester.testAll(1, 10, storage, false);
-      expect(results.length).to.eq(9);
+
+      const encryption_secret = RandomStringGenerator.generate(200);
+      const encryptionConfigs = [
+        {moduleId: ModuleClearText.MODULE_ID, secret: encryption_secret},
+        {moduleId: ModuleNodeWebCryptoAes128.MODULE_ID, secret: encryption_secret},
+        {moduleId: ModuleNodeWebCryptoAes256.MODULE_ID, secret: encryption_secret},
+        {moduleId: ModuleWebCryptoAes128.MODULE_ID, secret: encryption_secret},
+        {moduleId: ModuleWebCryptoAes256.MODULE_ID, secret: encryption_secret},
+        {moduleId: ModuleCryptoJsAes128.MODULE_ID, secret: encryption_secret},
+        {moduleId: ModuleCryptoJsAes256.MODULE_ID, secret: encryption_secret},
+        {moduleId: ModuleCryptoJsTripleDes.MODULE_ID, secret: encryption_secret},
+        {moduleId: ModuleTripleSec.MODULE_ID, secret: encryption_secret},
+        {moduleId: ModuleBlowfish.MODULE_ID, secret: encryption_secret},
+        {moduleId: ModuleTwoFish.MODULE_ID, secret: encryption_secret},
+      ];
+
+      const results = await LoadTester.testEncryptionConfigs(
+        encryptionConfigs,1, 10, storage, false);
+      expect(results.length).to.eq(11);
     }).timeout(5000);
   });
 });

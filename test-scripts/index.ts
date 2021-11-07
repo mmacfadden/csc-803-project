@@ -1,14 +1,29 @@
-import {LoadTester, CsvGenerator, InMemoryStorage} from "../src/";
+import {
+  CsvGenerator,
+  InMemoryStorage,
+  LoadTester,
+  ModuleBlowfish,
+  ModuleClearText,
+  ModuleCryptoJsAes128,
+  ModuleCryptoJsAes256,
+  ModuleCryptoJsTripleDes,
+  ModuleNodeWebCryptoAes128,
+  ModuleNodeWebCryptoAes256,
+  ModuleTripleSec,
+  ModuleTwoFish,
+  ModuleWebCryptoAes128,
+  ModuleWebCryptoAes256,
+  RandomStringGenerator
+} from "../src/";
 import minimist from "minimist";
 import {LocalStorage} from "node-localstorage";
-import {Crypto} from "node-webcrypto-ossl";
 import fs from "fs-extra";
+import {webcrypto} from "crypto";
 
 const args = minimist(process.argv.slice(2));
 
-globalThis.crypto = new Crypto({
-    directory: ".key_storage"
-});
+// Use nodes web crypto implementation.
+globalThis.crypto = webcrypto as any;
 
 const storage = args["storage"] === "disk" ?
   new LocalStorage("./.local_storage/") :
@@ -16,8 +31,23 @@ const storage = args["storage"] === "disk" ?
 
 storage.clear();
 
+const encryption_secret = RandomStringGenerator.generate(200);
+const encryptionConfigs = [
+  {moduleId: ModuleClearText.MODULE_ID, secret: encryption_secret},
+  {moduleId: ModuleNodeWebCryptoAes128.MODULE_ID, secret: encryption_secret},
+  {moduleId: ModuleNodeWebCryptoAes256.MODULE_ID, secret: encryption_secret},
+  {moduleId: ModuleWebCryptoAes128.MODULE_ID, secret: encryption_secret},
+  {moduleId: ModuleWebCryptoAes256.MODULE_ID, secret: encryption_secret},
+  {moduleId: ModuleCryptoJsAes128.MODULE_ID, secret: encryption_secret},
+  {moduleId: ModuleCryptoJsAes256.MODULE_ID, secret: encryption_secret},
+  {moduleId: ModuleCryptoJsTripleDes.MODULE_ID, secret: encryption_secret},
+  {moduleId: ModuleTripleSec.MODULE_ID, secret: encryption_secret},
+  {moduleId: ModuleBlowfish.MODULE_ID, secret: encryption_secret},
+  {moduleId: ModuleTwoFish.MODULE_ID, secret: encryption_secret},
+];
+
 LoadTester
-  .testAll( 100, 100, storage, false)
+  .testEncryptionConfigs(encryptionConfigs, 100, 100, storage, false)
   .then(results => {
     const csvFile = args["csv"];
     if (csvFile) {

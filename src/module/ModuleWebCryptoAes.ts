@@ -15,7 +15,8 @@ import {WebCryptoUtil} from "./WebCryptoUtil";
 export abstract class ModuleWebCryptoAes extends SymmetricEncryptionBasedModule {
 
   private _derivedKey: CryptoKey | null;
-  private _aesLength;
+  private readonly _aesLength;
+  private readonly _crypto: Crypto;
 
   /**
    * Creates a new ModuleBlowfish instance.
@@ -26,18 +27,19 @@ export abstract class ModuleWebCryptoAes extends SymmetricEncryptionBasedModule 
    * @param aesLength
    *   The length of the AES encryption key.
    */
-  protected constructor(moduleId: string, secret: string, aesLength: number) {
+  protected constructor(crypto: Crypto, moduleId: string, secret: string, aesLength: number) {
     super(moduleId, secret);
     this._aesLength = aesLength;
     this._derivedKey = null;
+    this._crypto = crypto;
   }
 
   /**
    * @inheritDoc
    */
   public async init(): Promise<void> {
-    const salt = crypto.getRandomValues(new Uint8Array(32));
-    this._derivedKey = await WebCryptoUtil.deriveKey(this._encryptionSecret, salt, this._aesLength);
+    const salt = this._crypto.getRandomValues(new Uint8Array(32));
+    this._derivedKey = await WebCryptoUtil.deriveKey(this._crypto, this._encryptionSecret, salt, this._aesLength);
   }
 
   /**
@@ -45,14 +47,14 @@ export abstract class ModuleWebCryptoAes extends SymmetricEncryptionBasedModule 
    */
   public async encrypt(plainText: string): Promise<string> {
     const dataAsBytes = Buffer.from(plainText, "utf-8");
-    const salt = crypto.getRandomValues(new Uint8Array(32));
+    const salt = this._crypto.getRandomValues(new Uint8Array(32));
 
     const saltedData = new Uint8Array(dataAsBytes.length + salt.length);
     saltedData.set(salt)
     saltedData.set(dataAsBytes, salt.length);
 
-    const iv = crypto.getRandomValues(new Uint8Array(12));
-    const encryptedContent = await crypto.subtle.encrypt({name: "AES-GCM", iv}, this._derivedKey!, saltedData);
+    const iv = this._crypto.getRandomValues(new Uint8Array(12));
+    const encryptedContent = await this._crypto.subtle.encrypt({name: "AES-GCM", iv}, this._derivedKey!, saltedData);
     const encryptedBytes = new Uint8Array(encryptedContent);
 
     const payload = new Uint8Array(iv.length + encryptedBytes.length);
@@ -70,7 +72,7 @@ export abstract class ModuleWebCryptoAes extends SymmetricEncryptionBasedModule 
     const iv = encryptedBytes.slice(0, 12);
     const data = encryptedBytes.slice(12);
 
-    const decryptedContent = await crypto.subtle.decrypt(
+    const decryptedContent = await this._crypto.subtle.decrypt(
       {name: "AES-GCM", iv},
       this._derivedKey!,
       data

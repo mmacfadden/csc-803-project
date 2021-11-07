@@ -8,7 +8,7 @@ import {
   ModuleCryptoJsTripleDes,
   ModuleTripleSec,
   ModuleWebCryptoAes256,
-  ModuleWebCryptoAes256SaltedKey, ModuleWebCryptoAes128
+  ModuleWebCryptoAes256SaltedKey, ModuleWebCryptoAes128, ModuleNodeWebCryptoAes128, ModuleNodeWebCryptoAes256
 } from "./";
 import {ModuleTwoFish} from "./ModuleTwoFish";
 
@@ -49,6 +49,12 @@ export class EncryptionModuleFactory {
 
       case ModuleWebCryptoAes256.MODULE_ID:
         return new ModuleWebCryptoAes256(config.secret);
+
+        case ModuleNodeWebCryptoAes128.MODULE_ID:
+        return new ModuleNodeWebCryptoAes128(config.secret);
+
+      case ModuleNodeWebCryptoAes256.MODULE_ID:
+        return new ModuleNodeWebCryptoAes256(config.secret);
 
       case ModuleBlowfish.MODULE_ID:
         return new ModuleBlowfish(config.secret);

@@ -19,6 +19,6 @@ export class ModuleWebCryptoAes256 extends ModuleWebCryptoAes {
    *   The symmetric encryption secret to derive a key from.
    */
   constructor(secret: string) {
-    super(ModuleWebCryptoAes256.MODULE_ID, secret, 256);
+    super(globalThis.crypto, ModuleWebCryptoAes256.MODULE_ID, secret, 256);
   }
 }

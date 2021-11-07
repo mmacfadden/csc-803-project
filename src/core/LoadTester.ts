@@ -5,7 +5,7 @@ import {
   ModuleClearText,
   ModuleCryptoJsAes128,
   ModuleCryptoJsAes256,
-  ModuleCryptoJsTripleDes,
+  ModuleCryptoJsTripleDes, ModuleNodeWebCryptoAes128, ModuleNodeWebCryptoAes256,
   ModuleTripleSec,
   ModuleTwoFish,
   ModuleWebCryptoAes128,
@@ -39,24 +39,12 @@ export class LoadTester {
    *
    * @returns A string array of all test results in CSV format.
    */
-  public static async testAll(entryCount: number,
-                              valueSizeBytes: number,
-                              storage: Storage,
-                              quiet: boolean,
-                              hooks?: ILoadTesterHooks): Promise<ILoadTestResult[]> {
-    const encryption_secret = RandomStringGenerator.generate(200);
-    const encryptionConfigs: IEncryptionConfig[] = [
-      {moduleId: ModuleClearText.MODULE_ID, secret: encryption_secret},
-      {moduleId: ModuleWebCryptoAes128.MODULE_ID, secret: encryption_secret},
-      {moduleId: ModuleWebCryptoAes256.MODULE_ID, secret: encryption_secret},
-      {moduleId: ModuleCryptoJsAes128.MODULE_ID, secret: encryption_secret},
-      {moduleId: ModuleCryptoJsAes256.MODULE_ID, secret: encryption_secret},
-      {moduleId: ModuleCryptoJsTripleDes.MODULE_ID, secret: encryption_secret},
-      {moduleId: ModuleTripleSec.MODULE_ID, secret: encryption_secret},
-      {moduleId: ModuleBlowfish.MODULE_ID, secret: encryption_secret},
-      {moduleId: ModuleTwoFish.MODULE_ID, secret: encryption_secret},
-    ];
-
+  public static async testEncryptionConfigs(encryptionConfigs: IEncryptionConfig[],
+                                            entryCount: number,
+                                            valueSizeBytes: number,
+                                            storage: Storage,
+                                            quiet: boolean,
+                                            hooks?: ILoadTesterHooks): Promise<ILoadTestResult[]> {
     const testConfigs: ILoadTestConfig[] = encryptionConfigs.map(ec => {
       return {encryptionConfig: ec, valueSizeBytes, entryCount};
     });

@@ -1,4 +1,8 @@
-const {LoadTester, CsvGenerator} = EncryptedStorage;
+const {LoadTester, CsvGenerator, ModuleBlowfish,
+  ModuleClearText, ModuleCryptoJsAes128, ModuleCryptoJsAes256, ModuleCryptoJsTripleDes,
+  ModuleNodeWebCryptoAes128,
+  ModuleNodeWebCryptoAes256, ModuleTripleSec, ModuleTwoFish, ModuleWebCryptoAes128, ModuleWebCryptoAes256,
+  RandomStringGenerator} = EncryptedStorage;
 
 //
 // UI Elements
@@ -47,8 +51,21 @@ async function loadTest() {
   downloadButton.prop("disabled", true);
 
   try {
-    const results = await LoadTester.testAll(
-        100, 100, localStorage, true, hooks);
+    const encryption_secret = RandomStringGenerator.generate(200);
+    const encryptionConfigs = [
+      {moduleId: ModuleClearText.MODULE_ID, secret: encryption_secret},
+      {moduleId: ModuleWebCryptoAes128.MODULE_ID, secret: encryption_secret},
+      {moduleId: ModuleWebCryptoAes256.MODULE_ID, secret: encryption_secret},
+      {moduleId: ModuleCryptoJsAes128.MODULE_ID, secret: encryption_secret},
+      {moduleId: ModuleCryptoJsAes256.MODULE_ID, secret: encryption_secret},
+      {moduleId: ModuleCryptoJsTripleDes.MODULE_ID, secret: encryption_secret},
+      {moduleId: ModuleTripleSec.MODULE_ID, secret: encryption_secret},
+      {moduleId: ModuleBlowfish.MODULE_ID, secret: encryption_secret},
+      {moduleId: ModuleTwoFish.MODULE_ID, secret: encryption_secret},
+    ];
+
+    const results = await LoadTester.testEncryptionConfigs(
+        encryptionConfigs, 100, 100, localStorage, true, hooks);
 
     const csvData = CsvGenerator.generateCsv(results);
     resultsTextArea.val(csvData);
