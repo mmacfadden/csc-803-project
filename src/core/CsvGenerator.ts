@@ -10,8 +10,10 @@ export class CsvGenerator {
     "Entry Count",
     "Cumulative Time (ms)",
     "Average Read/Write Time (ms)",
+    "Average Read Time (ms)",
     "Average Write Time (ms)",
-    "Average Read Time (ms)"
+    "Average Read Throughput (kBps)",
+    "Average Write Throughput (kBps)",
   ];
 
   public static generateCsv(results: ILoadTestResult[]): string {
@@ -21,14 +23,25 @@ export class CsvGenerator {
 
     const data = results
       .map(row => {
-        const {moduleId, entryCount, totalTimeMs, averageReadTimeMs, averageWriteTimeMs, averageRearWriteTimeMs} = row
+        const {
+          moduleId,
+          entryCount,
+          totalTimeMs,
+          averageReadTimeMs,
+          averageWriteTimeMs,
+          averageRearWriteTimeMs,
+          avgReadThroughputKbps,
+          avgWriteThroughputKbps
+        } = row
         return [
           moduleId,
           entryCount,
           totalTimeMs,
           averageReadTimeMs,
           averageWriteTimeMs,
-          averageRearWriteTimeMs
+          averageRearWriteTimeMs,
+          avgReadThroughputKbps,
+          avgWriteThroughputKbps
         ].join(",");
       });
 

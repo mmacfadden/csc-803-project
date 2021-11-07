@@ -1,7 +1,7 @@
 import {ModuleWebCryptoAes} from "./ModuleWebCryptoAes";
 
 /**
- * This module uses the HTML5 WebCrypto APT to implement an AES 256
+ * This module uses the HTML5 WebCrypto APT to implement an AES 128
  * encryption algorithm.  More information on the WebCrypto API can
  * be found at:
  *    https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API
@@ -9,8 +9,8 @@ import {ModuleWebCryptoAes} from "./ModuleWebCryptoAes";
  * Information about the AES Cypher can be found here:
  *    https://en.wikipedia.org/wiki/Advanced_Encryption_Standard
  */
-export class ModuleWebCryptoAes256 extends ModuleWebCryptoAes {
-  static readonly MODULE_ID = "AES 256 (WebCrypto API)";
+export class ModuleWebCryptoAes128 extends ModuleWebCryptoAes {
+  static readonly MODULE_ID = "AES 128 (WebCrypto API)";
 
   /**
    * Creates a new ModuleBlowfish instance.
@@ -19,6 +19,6 @@ export class ModuleWebCryptoAes256 extends ModuleWebCryptoAes {
    *   The symmetric encryption secret to derive a key from.
    */
   constructor(secret: string) {
-    super(ModuleWebCryptoAes256.MODULE_ID, secret, 256);
+    super(ModuleWebCryptoAes128.MODULE_ID, secret, 128);
   }
 }

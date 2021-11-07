@@ -6,7 +6,7 @@ const {LoadTester, CsvGenerator} = EncryptedStorage;
 const status = $("#status");
 
 const runButton = $("#run");
-const downloadButton = $("#downTiminload");
+const downloadButton = $("#download");
 
 const resultTable = $("#results-table");
 const resultsTextArea = $("#results-csv");
@@ -47,7 +47,8 @@ async function loadTest() {
   downloadButton.prop("disabled", true);
 
   try {
-    const results = await LoadTester.testAll("password", localStorage, true, hooks);
+    const results = await LoadTester.testAll(
+        "password", 100, 100, localStorage, true, hooks);
 
     const csvData = CsvGenerator.generateCsv(results);
     resultsTextArea.val(csvData);

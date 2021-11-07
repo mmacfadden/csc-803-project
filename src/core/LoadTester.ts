@@ -1,7 +1,6 @@
 import {
   EncryptedStorage,
   EncryptionConfigManager,
-  WebStorageEncryptionModule,
   EncryptionModuleFactory,
   IEncryptionConfig,
   ModuleBlowfish,
@@ -11,8 +10,10 @@ import {
   ModuleCryptoJsTripleDes,
   ModuleTripleSec,
   ModuleTwoFish,
+  ModuleWebCryptoAes128,
   ModuleWebCryptoAes256,
-  ModuleWebCryptoAes256SaltedKey
+  ModuleWebCryptoAes256SaltedKey,
+  WebStorageEncryptionModule
 } from "../";
 import {RandomStringGenerator} from "./RandomStringGenerator";
 import {Timing} from "./Timing";
@@ -33,7 +34,7 @@ export class LoadTester {
    *   The master password to use to encrypt the key.
    * @param entryCount
    *   The number of entries to read and write to Storage.
-   * @param valueSize
+   * @param valueSizeBytes
    *   The number of characters in the value to store.
    * @param storage
    *   The HTML5 Storage object to use to store data.
@@ -46,15 +47,16 @@ export class LoadTester {
    */
   public static async testAll(masterPassword: string,
                               entryCount: number,
-                              valueSize: number,
+                              valueSizeBytes: number,
                               storage: Storage,
                               quiet: boolean,
                               hooks?: ILoadTesterHooks): Promise<ILoadTestResult[]> {
     const encryption_secret = RandomStringGenerator.generate(200);
     const configs: IEncryptionConfig[] = [
       {moduleId: ModuleClearText.MODULE_ID, secret: encryption_secret},
-      {moduleId: ModuleWebCryptoAes256SaltedKey.MODULE_ID, secret: encryption_secret},
+      {moduleId: ModuleWebCryptoAes128.MODULE_ID, secret: encryption_secret},
       {moduleId: ModuleWebCryptoAes256.MODULE_ID, secret: encryption_secret},
+      // {moduleId: ModuleWebCryptoAes256SaltedKey.MODULE_ID, secret: encryption_secret},
       {moduleId: ModuleCryptoJsAes128.MODULE_ID, secret: encryption_secret},
       {moduleId: ModuleCryptoJsAes256.MODULE_ID, secret: encryption_secret},
       {moduleId: ModuleCryptoJsTripleDes.MODULE_ID, secret: encryption_secret},
@@ -63,7 +65,7 @@ export class LoadTester {
       {moduleId: ModuleTwoFish.MODULE_ID, secret: encryption_secret},
     ];
 
-    return LoadTester.runTests(masterPassword, entryCount, valueSize, storage, configs, quiet, hooks);
+    return LoadTester.runTests(masterPassword, entryCount, valueSizeBytes, storage, configs, quiet, hooks);
   }
 
   /**
@@ -73,7 +75,7 @@ export class LoadTester {
    *   The master password to use to encrypt the key.
    * @param entryCount
    *   The number of entries to read and write to Storage.
-   * @param valueSize
+   * @param valueSizeBytes
    *   The number of characters in the value to store.
    * @param storage
    *   The HTML5 Storage object to use to store data.
@@ -88,7 +90,7 @@ export class LoadTester {
    */
   public static async runTests(masterPassword: string,
                                entryCount: number,
-                               valueSize: number,
+                               valueSizeBytes: number,
                                storage: Storage,
                                encryptionConfigs: IEncryptionConfig[],
                                quiet: boolean,
@@ -105,7 +107,7 @@ export class LoadTester {
     const results: ILoadTestResult[] = [];
 
     for await (let result of LoadTester._generateTests(
-      masterPassword, entryCount, valueSize, storage, encryptionConfigs, quiet, hooks)) {
+      masterPassword, entryCount, valueSizeBytes, storage, encryptionConfigs, quiet, hooks)) {
       results.push(result);
     }
 
@@ -123,7 +125,7 @@ export class LoadTester {
    *   The master password to use to encrypt the key.
    * @param entryCount
    *   The number of entries to read and write to Storage.
-   * @param valueSize
+   * @param valueSizeBytes
    *   The number of characters in the value to store.
    * @param storage
    *   The HTML5 Storage object to use to store data.
@@ -138,7 +140,7 @@ export class LoadTester {
    */
   private static async* _generateTests(masterPassword: string,
                                        entryCount: number,
-                                       valueSize: number,
+                                       valueSizeBytes: number,
                                        storage: Storage,
                                        encryptionConfigs: IEncryptionConfig[],
                                        quiet: boolean,
@@ -146,7 +148,7 @@ export class LoadTester {
     for (const i in encryptionConfigs) {
       const config = encryptionConfigs[i];
       const tester = new LoadTester(config, masterPassword, storage);
-      yield tester.loadTest(entryCount, valueSize, quiet, hooks);
+      yield tester.loadTest(entryCount, valueSizeBytes, quiet, hooks);
     }
   }
 
@@ -196,7 +198,7 @@ export class LoadTester {
    *
    * @param entryCount
    *   The number of entries to read and write to Storage.
-   * @param valueSize
+   * @param valueSizeBytes
    *   The number of characters in the value to store.
    * @param quiet
    *   Whether to suppress output.
@@ -204,16 +206,18 @@ export class LoadTester {
    *   Callback hooks to get status during testing.
    */
   public async loadTest(entryCount: number,
-                        valueSize: number,
+                        valueSizeBytes: number,
                         quiet: boolean,
                         hooks?: ILoadTesterHooks): Promise<ILoadTestResult> {
     if (entryCount <= 0) {
       throw new Error("entryCount must be > 0");
     }
 
-    if (valueSize <= 0) {
+    if (valueSizeBytes <= 0) {
       throw new Error("valueSize must be > 0");
     }
+
+    this._storage.clear();
 
     if (hooks) {
       hooks.testStarted(this._encModule.moduleId());
@@ -225,31 +229,36 @@ export class LoadTester {
 
     await this._encModule.init();
 
-    let cumulativeWriteTime = 0;
-    let cumulativeReadTime = 0;
+    Timing.clear();
 
     for (let i = 0; i < entryCount; i++) {
       const k = `key_${i}`;
-      const value = RandomStringGenerator.generate(valueSize);
+      const value = RandomStringGenerator.generate(valueSizeBytes);
 
-      const writeStartTime = Timing.now();
+      Timing.writeStart(i);
       await this._storage.setItem(k, value);
+      Timing.writeEnd(i);
 
-      const readStartTime = Timing.now();
+      Timing.readStart(i);
       const read = await this._storage.getItem(k);
-
-      cumulativeReadTime += Timing.now() - readStartTime;
-      cumulativeWriteTime += readStartTime - writeStartTime;
+      Timing.readEnd(i);
 
       if (read !== value) {
         throw new Error(`values did not match:\n"${value}"\n"${read}"`);
       }
     }
 
+    const cumulativeReadTime = Timing.getTotalReadTime();
+    const cumulativeWriteTime = Timing.getTotalWriteTime();
+
     const totalTimeMs = cumulativeWriteTime + cumulativeReadTime;
     const averageRearWriteTimeMs = totalTimeMs / entryCount;
     const averageWriteTimeMs = cumulativeWriteTime / entryCount;
     const averageReadTimeMs = cumulativeReadTime / entryCount;
+
+    const totalBytes = entryCount * valueSizeBytes;
+    const avgReadThroughputKbps = (totalBytes / 1000) / (cumulativeReadTime / 1000);
+    const avgWriteThroughputKbps = (totalBytes / 1000) / (cumulativeWriteTime / 1000);
 
     const result = {
       moduleId: this._encModule.moduleId(),
@@ -257,7 +266,9 @@ export class LoadTester {
       totalTimeMs,
       averageRearWriteTimeMs,
       averageWriteTimeMs,
-      averageReadTimeMs
+      averageReadTimeMs,
+      avgReadThroughputKbps,
+      avgWriteThroughputKbps
     };
 
     if (hooks) {

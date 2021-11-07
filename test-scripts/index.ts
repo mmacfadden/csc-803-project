@@ -1,25 +1,34 @@
 import {LoadTester, CsvGenerator, InMemoryStorage} from "../src/";
+import minimist from "minimist";
 import {LocalStorage} from "node-localstorage";
 import {Crypto} from "node-webcrypto-ossl";
+import fs from "fs-extra";
 
-if (globalThis.crypto === undefined) {
-  globalThis.crypto = new Crypto({
+const args = minimist(process.argv.slice(2));
+
+globalThis.crypto = new Crypto({
     directory: ".key_storage"
-  });
-}
+});
 
-// const storage = new LocalStorage("./.localStorage/");
-const storage = new InMemoryStorage();
+const storage = args["storage"] === "disk" ?
+  new LocalStorage("./.local_storage/") :
+  new InMemoryStorage();
+
 storage.clear();
 
 const masterPassword = "password";
 
 LoadTester
-  .testAll(masterPassword, 100, 100, storage, false)
+  .testAll(masterPassword, 10000, 100, storage, false)
   .then(results => {
-    const csv = CsvGenerator.generateCsv(results);
-    console.log(csv);
+    const csvFile = args["csv"];
+    if (csvFile) {
+      const csv = CsvGenerator.generateCsv(results);
+      fs.writeFileSync(csvFile, csv);
+    }
 
+    console.log("");
     console.table(results);
+    console.log("");
   })
   .catch(e => console.error(e));

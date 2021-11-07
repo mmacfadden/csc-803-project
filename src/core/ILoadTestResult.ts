@@ -5,4 +5,6 @@ export interface ILoadTestResult {
   averageReadTimeMs: number;
   averageWriteTimeMs: number;
   averageRearWriteTimeMs: number;
+  avgReadThroughputKbps: number;
+  avgWriteThroughputKbps: number;
 }

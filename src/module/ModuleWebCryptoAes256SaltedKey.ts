@@ -30,7 +30,7 @@ export class ModuleWebCryptoAes256SaltedKey extends SymmetricEncryptionBasedModu
   public async encrypt(plainText: string): Promise<string> {
     const dataAsBytes = Buffer.from(plainText, "utf-8");
     const salt = crypto.getRandomValues(new Uint8Array(32));
-    const aesKey = await WebCryptoUtil.deriveKey(this._encryptionSecret, salt);
+    const aesKey = await WebCryptoUtil.deriveKey(this._encryptionSecret, salt, 256);
     const iv = crypto.getRandomValues(new Uint8Array(12));
     const encryptedContent = await crypto.subtle.encrypt({name: "AES-GCM", iv}, aesKey, dataAsBytes);
     const encryptedBytes = new Uint8Array(encryptedContent);
@@ -51,7 +51,7 @@ export class ModuleWebCryptoAes256SaltedKey extends SymmetricEncryptionBasedModu
     const iv = encryptedBytes.slice(32, 32 + 12);
     const data = encryptedBytes.slice(32 + 12);
 
-    const aesKey = await WebCryptoUtil.deriveKey(this._encryptionSecret, salt);
+    const aesKey = await WebCryptoUtil.deriveKey(this._encryptionSecret, salt, 256);
 
     const decryptedContent = await crypto.subtle.decrypt(
       {name: "AES-GCM", iv},
