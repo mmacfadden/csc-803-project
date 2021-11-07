@@ -5,9 +5,9 @@ import {
   ModuleClearText,
   ModuleCryptoJsAes128,
   ModuleCryptoJsAes256,
-  ModuleCryptoJsTripleDes,
+  ModuleCryptoJsTripleDes, ModuleNodeWebCryptoAes128, ModuleNodeWebCryptoAes256,
   ModuleTripleSec,
-  ModuleTwoFish,
+  ModuleTwoFish, ModuleWebCryptoAes128,
   ModuleWebCryptoAes256,
   ModuleWebCryptoAes256SaltedKey
 } from '../../src/';
@@ -72,6 +72,33 @@ describe('EncryptionModuleFactory', () => {
       }
       const module = EncryptionModuleFactory.createModule(config);
       expect(module instanceof ModuleWebCryptoAes256).to.be.true;
+    });
+
+    it(ModuleWebCryptoAes128.MODULE_ID, () => {
+      const config = {
+        moduleId: ModuleWebCryptoAes128.MODULE_ID,
+        secret: "none"
+      }
+      const module = EncryptionModuleFactory.createModule(config);
+      expect(module instanceof ModuleWebCryptoAes128).to.be.true;
+    });
+
+    it(ModuleNodeWebCryptoAes256.MODULE_ID, () => {
+      const config = {
+        moduleId: ModuleNodeWebCryptoAes256.MODULE_ID,
+        secret: "none"
+      }
+      const module = EncryptionModuleFactory.createModule(config);
+      expect(module instanceof ModuleNodeWebCryptoAes256).to.be.true;
+    });
+
+    it(ModuleNodeWebCryptoAes128.MODULE_ID, () => {
+      const config = {
+        moduleId: ModuleNodeWebCryptoAes128.MODULE_ID,
+        secret: "none"
+      }
+      const module = EncryptionModuleFactory.createModule(config);
+      expect(module instanceof ModuleNodeWebCryptoAes128).to.be.true;
     });
 
     it(ModuleBlowfish.MODULE_ID, () => {

@@ -33,15 +33,9 @@ const MODULES = [
 
 const plainText = "some plain text";
 
-if (globalThis.crypto === undefined) {
-  globalThis.crypto = new Crypto({
-    directory: ".key_storage"
-  });
-}
-
-describe('EncryptionModuleFactory', () => {
+describe('Encryption Module Correctness', () => {
   MODULES.forEach(module => {
-    it(`${module.moduleId()} Encrypt / Decrypt}`, async () => {
+    it(`${module.moduleId()} Encrypt / Decrypt`, async () => {
       await module.init();
       const cypherText = await module.encrypt(plainText);
       const decrypted = await module.decrypt(cypherText);

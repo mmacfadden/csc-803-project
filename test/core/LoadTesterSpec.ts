@@ -17,7 +17,7 @@ import {
   ModuleTripleSec,
   ModuleTwoFish,
   ModuleWebCryptoAes128,
-  ModuleWebCryptoAes256,
+  ModuleWebCryptoAes256, ModuleWebCryptoAes256SaltedKey,
   RandomStringGenerator
 } from '../../src/';
 import {Crypto} from "node-webcrypto-ossl";
@@ -134,11 +134,12 @@ describe('LoadTester', () => {
         {moduleId: ModuleTripleSec.MODULE_ID, secret: encryption_secret},
         {moduleId: ModuleBlowfish.MODULE_ID, secret: encryption_secret},
         {moduleId: ModuleTwoFish.MODULE_ID, secret: encryption_secret},
+        {moduleId: ModuleWebCryptoAes256SaltedKey.MODULE_ID, secret: encryption_secret},
       ];
 
       const results = await LoadTester.testEncryptionConfigs(
         encryptionConfigs,1, 10, storage, false);
-      expect(results.length).to.eq(11);
+      expect(results.length).to.eq(12);
     }).timeout(20000);
   });
 });

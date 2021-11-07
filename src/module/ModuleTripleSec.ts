@@ -34,9 +34,9 @@ export class ModuleTripleSec extends SymmetricEncryptionBasedModule {
       this._encryptor.run({data}, (err, res) => {
         if (err) {
           reject(err);
+        } else {
+          resolve(res.toString("base64"));
         }
-
-        resolve(res.toString("base64"));
       });
     });
   }
@@ -51,9 +51,9 @@ export class ModuleTripleSec extends SymmetricEncryptionBasedModule {
       this._decryptor.run({data}, (err, res) => {
         if (err) {
           reject(err);
+        } else {
+          resolve(res.toString());
         }
-
-        resolve(res.toString());
       });
     });
   }
