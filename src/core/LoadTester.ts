@@ -217,9 +217,9 @@ export class LoadTester {
       moduleId: this._storage.moduleId(),
       entryCount: this._config.entryCount,
       totalTimeMs,
-      averageReadWriteTimeMs,
       averageWriteTimeMs,
       averageReadTimeMs,
+      averageReadWriteTimeMs,
       avgReadThroughputKbps,
       avgWriteThroughputKbps
     };

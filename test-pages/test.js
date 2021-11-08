@@ -93,7 +93,9 @@ function appendResultRow(result) {
   row.append($(`<td class="number">${round(result.totalTimeMs, 3)}</td>`));
   row.append($(`<td class="number">${round(result.averageReadTimeMs, 3)}</td>`));
   row.append($(`<td class="number">${round(result.averageWriteTimeMs, 3)}</td>`));
-  row.append($(`<td class="number">${round(result.averageRearWriteTimeMs, 3)}</td>`));
+  row.append($(`<td class="number">${round(result.averageReadWriteTimeMs, 3)}</td>`));
+  row.append($(`<td class="number">${round(result.avgReadThroughputKbps, 3)}</td>`));
+  row.append($(`<td class="number">${round(result.avgWriteThroughputKbps, 3)}</td>`));
 
   resultTable.append(row);
 }
