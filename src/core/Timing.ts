@@ -1,7 +1,6 @@
 /**
- * A helper class to get timestamps for timing.  It uses
- * "performance.now()" if available, try node's perf_hooks
- * API and then finally revert to "Date.now()".
+ * A helper class that uses the HTML UserTiming API to record performance
+ * data for load testing the EncryptedStorageFramework.
  */
 export class Timing {
 

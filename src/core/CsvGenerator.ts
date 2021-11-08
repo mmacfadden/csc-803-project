@@ -29,7 +29,7 @@ export class CsvGenerator {
           totalTimeMs,
           averageReadTimeMs,
           averageWriteTimeMs,
-          averageRearWriteTimeMs,
+          averageReadWriteTimeMs,
           avgReadThroughputKbps,
           avgWriteThroughputKbps
         } = row
@@ -39,7 +39,7 @@ export class CsvGenerator {
           totalTimeMs,
           averageReadTimeMs,
           averageWriteTimeMs,
-          averageRearWriteTimeMs,
+          averageReadWriteTimeMs,
           avgReadThroughputKbps,
           avgWriteThroughputKbps
         ].join(",");

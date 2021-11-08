@@ -18,7 +18,7 @@ describe('CsvGenerator', () => {
         entryCount: 100,
         totalTimeMs: 1,
         averageWriteTimeMs: 1,
-        averageRearWriteTimeMs: 1,
+        averageReadWriteTimeMs: 1,
         averageReadTimeMs: 1,
         avgWriteThroughputKbps: 10,
         avgReadThroughputKbps: 20

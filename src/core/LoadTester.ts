@@ -182,6 +182,12 @@ export class LoadTester {
       const k = `key_${i}`;
       const value = RandomStringGenerator.generate(this._config.valueSizeBytes);
 
+      const valLen = Buffer.byteLength(value, "utf-8");
+
+      if (valLen !== this._config.valueSizeBytes) {
+        throw new Error("The item value was not the correct number of bytes.");
+      }
+
       Timing.writeStart(i);
       await this._storage.setItem(k, value);
       Timing.writeEnd(i);
@@ -199,7 +205,7 @@ export class LoadTester {
     const cumulativeWriteTime = Timing.getTotalWriteTime();
 
     const totalTimeMs = cumulativeWriteTime + cumulativeReadTime;
-    const averageRearWriteTimeMs = totalTimeMs / this._config.entryCount;
+    const averageReadWriteTimeMs = totalTimeMs / this._config.entryCount;
     const averageWriteTimeMs = cumulativeWriteTime / this._config.entryCount;
     const averageReadTimeMs = cumulativeReadTime / this._config.entryCount;
 
@@ -207,11 +213,11 @@ export class LoadTester {
     const avgReadThroughputKbps = (totalBytes / 1000) / (cumulativeReadTime / 1000);
     const avgWriteThroughputKbps = (totalBytes / 1000) / (cumulativeWriteTime / 1000);
 
-    const result = {
+    const result: ILoadTestResult = {
       moduleId: this._storage.moduleId(),
       entryCount: this._config.entryCount,
       totalTimeMs,
-      averageRearWriteTimeMs,
+      averageReadWriteTimeMs,
       averageWriteTimeMs,
       averageReadTimeMs,
       avgReadThroughputKbps,

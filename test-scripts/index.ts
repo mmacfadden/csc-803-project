@@ -47,7 +47,7 @@ const encryptionConfigs = [
 ];
 
 LoadTester
-  .testEncryptionConfigs(encryptionConfigs, 100, 100, storage, false)
+  .testEncryptionConfigs(encryptionConfigs, 10000, 1000, storage, false)
   .then(results => {
     const csvFile = args["csv"];
     if (csvFile) {
