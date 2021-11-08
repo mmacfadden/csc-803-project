@@ -1,6 +1,5 @@
 import {expect} from 'chai';
 import {
-  EncryptionModuleFactory,
   ModuleBlowfish,
   ModuleClearText,
   ModuleCryptoJsAes128,
@@ -12,9 +11,11 @@ import {
   ModuleTwoFish,
   ModuleWebCryptoAes128,
   ModuleWebCryptoAes256,
-  ModuleWebCryptoAes256SaltedKey
+  ModuleWebCryptoAes256SaltedKey, RandomStringGenerator
 } from '../../src/';
-import {Crypto} from "node-webcrypto-ossl";
+import {webcrypto} from "crypto";
+
+globalThis.crypto = webcrypto as any;
 
 const MODULES = [
   new ModuleCryptoJsAes256("secret"),
@@ -31,7 +32,7 @@ const MODULES = [
   new ModuleClearText()
 ];
 
-const plainText = "some plain text";
+const plainText = RandomStringGenerator.generate(1000);
 
 describe('Encryption Module Correctness', () => {
   MODULES.forEach(module => {
