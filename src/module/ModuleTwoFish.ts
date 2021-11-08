@@ -39,16 +39,17 @@ export class ModuleTwoFish extends SymmetricEncryptionBasedModule {
     // data gets put into an array of the same size as the encrypted
     // data, which leaves 0's at the end. So we push on the length
     // of the pt data so we can truncated it later.
-    ctBytes.unshift(ptBytes.length);
-    return Buffer.from(ctBytes).toString("base64");
+    const b64 = Buffer.from(ctBytes).toString("base64");
+    return `${ptBytes.length}:${b64}`
   }
 
   /**
    * @inheritDoc
    */
   public async decrypt(cypherText: string): Promise<string> {
-    const ctBytes = [...Buffer.from(cypherText, "base64")];
-    const length = ctBytes.shift()
+    const [ptLen, b64] = cypherText.split(":");
+    const ctBytes = [...Buffer.from(b64, "base64")];
+    const length = Number(ptLen);
     const ptBytes = this._twofish.decrypt(this._key, ctBytes);
     const truncated = ptBytes.slice(0, length);
     return Buffer.from(truncated).toString("utf-8");
