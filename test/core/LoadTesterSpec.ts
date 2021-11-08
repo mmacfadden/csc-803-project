@@ -59,6 +59,16 @@ describe('LoadTester', () => {
       expect( () => new LoadTester(CONFIG, undefined as any)).to.throw();
     });
 
+    it('throws if config has an invalid entryCount', () => {
+      const storage = new InMemoryStorage();
+      expect( () => new LoadTester({encryptionConfig: ENC_CONFIG, entryCount: 0, valueSizeBytes: 10}, storage)).to.throw();
+    });
+
+    it('throws if config has an invalid value size', () => {
+      const storage = new InMemoryStorage();
+      expect( () => new LoadTester({encryptionConfig: ENC_CONFIG, entryCount: 10, valueSizeBytes: 0}, storage)).to.throw();
+    });
+
     it('Succeeds if valid args are passed in', () => {
       const storage = new InMemoryStorage();
       new LoadTester(CONFIG, storage);

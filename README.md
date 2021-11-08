@@ -50,11 +50,11 @@ npm run test
 The testing task will show the results of the test and the unit test coverage. Current test coverage is well over 90% coverage giving high confidence in the correctness of the codebase.
 
 ```text
-|----------------------|---------|----------|---------|---------|
-| File                 | % Stmts | % Branch | % Funcs | % Lines | 
-|----------------------|---------|----------|---------|---------|
-| All files            |   98.44 |    92.64 |     100 |   98.43 |
-|----------------------|---------|----------|---------|---------|   
+|------------------------|---------|----------|---------|---------|
+| File                   | % Stmts | % Branch | % Funcs | % Lines | 
+|------------------------|---------|----------|---------|---------|
+| All files              |   99.45 |    97.01 |     100 |   99.45 |                   
+|------------------------|---------|----------|---------|---------|   
 ```
 
 # Command Line Test for NodeJS

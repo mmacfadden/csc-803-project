@@ -1,16 +1,4 @@
-import {
-  EncryptedStorage,
-  IEncryptionConfig, ILoadTestConfig,
-  ModuleBlowfish,
-  ModuleClearText,
-  ModuleCryptoJsAes128,
-  ModuleCryptoJsAes256,
-  ModuleCryptoJsTripleDes, ModuleNodeWebCryptoAes128, ModuleNodeWebCryptoAes256,
-  ModuleTripleSec,
-  ModuleTwoFish,
-  ModuleWebCryptoAes128,
-  ModuleWebCryptoAes256
-} from "../";
+import {EncryptedStorage, IEncryptionConfig, ILoadTestConfig} from "../";
 import {RandomStringGenerator} from "./RandomStringGenerator";
 import {Timing} from "./Timing";
 import {ILoadTesterHooks} from "./ILoadTesterHooks";
@@ -26,6 +14,8 @@ export class LoadTester {
   /**
    * A helper method that tests all known encryption modules.
    *
+   * @param encryptionConfigs
+   *   The encryption configurations to test.
    * @param entryCount
    *   The number of entries to read and write to Storage.
    * @param valueSizeBytes
@@ -182,23 +172,13 @@ export class LoadTester {
       const k = `key_${i}`;
       const value = RandomStringGenerator.generate(this._config.valueSizeBytes);
 
-      const valLen = Buffer.byteLength(value, "utf-8");
-
-      if (valLen !== this._config.valueSizeBytes) {
-        throw new Error("The item value was not the correct number of bytes.");
-      }
-
       Timing.writeStart(i);
       await this._storage.setItem(k, value);
       Timing.writeEnd(i);
 
       Timing.readStart(i);
-      const read = await this._storage.getItem(k);
+      await this._storage.getItem(k);
       Timing.readEnd(i);
-
-      if (read !== value) {
-        throw new Error(`values did not match:\n"${value}"\n"${read}"`);
-      }
     }
 
     const cumulativeReadTime = Timing.getTotalReadTime();
