@@ -34,10 +34,10 @@ storage.clear();
 const encryption_secret = RandomStringGenerator.generate(200);
 const encryptionConfigs = [
   {moduleId: ModuleClearText.MODULE_ID, secret: encryption_secret},
-  {moduleId: ModuleNodeWebCryptoAes128.MODULE_ID, secret: encryption_secret},
-  {moduleId: ModuleNodeWebCryptoAes256.MODULE_ID, secret: encryption_secret},
   {moduleId: ModuleWebCryptoAes128.MODULE_ID, secret: encryption_secret},
   {moduleId: ModuleWebCryptoAes256.MODULE_ID, secret: encryption_secret},
+  {moduleId: ModuleNodeWebCryptoAes128.MODULE_ID, secret: encryption_secret},
+  {moduleId: ModuleNodeWebCryptoAes256.MODULE_ID, secret: encryption_secret},
   {moduleId: ModuleCryptoJsAes128.MODULE_ID, secret: encryption_secret},
   {moduleId: ModuleCryptoJsAes256.MODULE_ID, secret: encryption_secret},
   {moduleId: ModuleCryptoJsTripleDes.MODULE_ID, secret: encryption_secret},

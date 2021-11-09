@@ -12,6 +12,12 @@ import {ILoadTestResult} from "./ILoadTestResult";
 export class LoadTester {
 
   /**
+   * The storage key that is used to read and write data during load testing.
+   * @private
+   */
+  private static readonly _KEY = "load_test_key";
+
+  /**
    * A helper method that tests all known encryption modules.
    *
    * @param encryptionConfigs
@@ -45,11 +51,10 @@ export class LoadTester {
   /**
    * A helper to run a specific set of tests.
    *
-   *   The number of characters in the value to store.
-   * @param storage
-   *   The HTML5 Storage object to use to store data.
    * @param testConfigs
    *   The encryption module configs to test.
+   * @param storage
+   *   The HTML5 Storage object to use to store data.
    * @param quiet
    *   Whether to suppress log output.
    * @param hooks
@@ -61,7 +66,6 @@ export class LoadTester {
                                storage: Storage,
                                quiet: boolean,
                                hooks?: ILoadTesterHooks): Promise<ILoadTestResult[]> {
-
     if (hooks) {
       hooks.testingStarted(testConfigs);
     }
@@ -85,11 +89,10 @@ export class LoadTester {
 
   /**
    * An async generator helper that generates the set of test cases.
-   *
-   * @param storage
-   *   The HTML5 Storage object to use to store data.
    * @param testConfigs
    *   The encryption module configs to test.
+   * @param storage
+   *   The HTML5 Storage object to use to store data.
    * @param quiet
    *   Whether to suppress log output.
    * @param hooks
@@ -119,10 +122,7 @@ export class LoadTester {
    * @param storage
    *   The HTML5 Storage instance to us.
    */
-  constructor(
-    config: ILoadTestConfig,
-    storage: Storage
-  ) {
+  constructor(config: ILoadTestConfig, storage: Storage) {
     if (!config) {
       throw new Error("config must be defined");
     }
@@ -166,18 +166,17 @@ export class LoadTester {
 
     await this._storage.init();
 
-    Timing.clear();
+    Timing.startMeasurementSession();
 
     for (let i = 0; i < this._config.entryCount; i++) {
-      const k = `key_${i}`;
       const value = RandomStringGenerator.generate(this._config.valueSizeBytes);
 
       Timing.writeStart(i);
-      await this._storage.setItem(k, value);
+      await this._storage.setItem(LoadTester._KEY, value);
       Timing.writeEnd(i);
 
       Timing.readStart(i);
-      await this._storage.getItem(k);
+      await this._storage.getItem(LoadTester._KEY);
       Timing.readEnd(i);
     }
 

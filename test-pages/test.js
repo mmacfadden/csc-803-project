@@ -29,7 +29,7 @@ const hooks = {
   testStarted(module) {
     testCounter++;
     status.html(`Test ${testCounter} of ${totalTests}:  ${module}`);
-    inProgressRow = $(`<tr><td>${module}</td><td colspan="5">In Progress</td></tr>`);
+    inProgressRow = $(`<tr><td>${module}</td><td colspan="7">In Progress</td></tr>`);
     resultTable.append(inProgressRow);
   },
   testFinished(result) {
@@ -65,7 +65,7 @@ async function loadTest() {
     ];
 
     const results = await LoadTester.testEncryptionConfigs(
-        encryptionConfigs, 100, 100, localStorage, true, hooks);
+        encryptionConfigs, 10000, 1000, localStorage, true, hooks);
 
     const csvData = CsvGenerator.generateCsv(results);
     resultsTextArea.val(csvData);

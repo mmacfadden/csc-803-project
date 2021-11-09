@@ -1,7 +1,7 @@
 .idea
 .local_storage
 .key_storage
-load_test.csv
+load_test_node.csv
 node_modules
 dist/
 yarn-error.log
