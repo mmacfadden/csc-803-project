@@ -29,7 +29,7 @@ The codebase is implemented using the [TypeScript](https://www.typescriptlang.or
 # Dependencies
 The project requires the following libraries and frameworks in order to compile and run the code:
 
-  * [Node JS](https://nodejs.org/en/): 14.x
+  * [Node JS](https://nodejs.org/en/): 16.x
   * [Yarn](https://yarnpkg.com/): 1.22.x
 
 # Build
