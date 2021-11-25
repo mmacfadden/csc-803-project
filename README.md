@@ -63,7 +63,7 @@ npm run load
 ```
 
 # Browser Testing
-You must have already built the code before using the browser tests. Assuming the code is built, then simply open the [test-pages/index.html](test-pages/index.html) file in a browser.  Then click the "Run Load Test" button at the top of the screen. Once the tests have completed you can download a comma separated value (CSV) file containing the results by hitting the "Download Results" button at the bottom of the screen.
+You must have already built the code before using the browser tests. Assuming the code is built, then simply open the [test-pages/index.html](test-web-app/index.html) file in a browser.  Then click the "Run Load Test" button at the top of the screen. Once the tests have completed you can download a comma separated value (CSV) file containing the results by hitting the "Download Results" button at the bottom of the screen.
 
 ![](assets/screen-shot.png)
 
