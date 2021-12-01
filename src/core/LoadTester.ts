@@ -22,7 +22,7 @@ export class LoadTester {
    *
    * @param encryptionConfigs
    *   The encryption configurations to test.
-   * @param entryCount
+   * @param operationCount
    *   The number of entries to read and write to Storage.
    * @param valueSizeBytes
    *   The number of characters in the value to store.
@@ -36,13 +36,13 @@ export class LoadTester {
    * @returns A string array of all test results in CSV format.
    */
   public static async testEncryptionConfigs(encryptionConfigs: IEncryptionConfig[],
-                                            entryCount: number,
+                                            operationCount: number,
                                             valueSizeBytes: number,
                                             storage: Storage,
                                             quiet: boolean,
                                             hooks?: ILoadTesterHooks): Promise<ILoadTestResult[]> {
     const testConfigs: ILoadTestConfig[] = encryptionConfigs.map(ec => {
-      return {encryptionConfig: ec, valueSizeBytes, entryCount};
+      return {encryptionConfig: ec, valueSizeBytes, operationCount: operationCount};
     });
 
     return LoadTester.runTests(testConfigs, storage, quiet, hooks);
@@ -127,8 +127,8 @@ export class LoadTester {
       throw new Error("config must be defined");
     }
 
-    if (!config.entryCount || config.entryCount <= 0) {
-      throw new Error("entryCount must be > 0");
+    if (!config.operationCount || config.operationCount <= 0) {
+      throw new Error("operationCount must be > 0");
     }
 
     if (!config.valueSizeBytes || config.valueSizeBytes <= 0) {
@@ -168,7 +168,7 @@ export class LoadTester {
 
     Timing.startMeasurementSession();
 
-    for (let i = 0; i < this._config.entryCount; i++) {
+    for (let i = 0; i < this._config.operationCount; i++) {
       const value = RandomStringGenerator.generate(this._config.valueSizeBytes);
 
       Timing.writeStart(i);
@@ -184,17 +184,17 @@ export class LoadTester {
     const cumulativeWriteTime = Timing.getTotalWriteTime();
 
     const totalTimeMs = cumulativeWriteTime + cumulativeReadTime;
-    const averageReadWriteTimeMs = totalTimeMs / this._config.entryCount;
-    const averageWriteTimeMs = cumulativeWriteTime / this._config.entryCount;
-    const averageReadTimeMs = cumulativeReadTime / this._config.entryCount;
+    const averageReadWriteTimeMs = totalTimeMs / this._config.operationCount;
+    const averageWriteTimeMs = cumulativeWriteTime / this._config.operationCount;
+    const averageReadTimeMs = cumulativeReadTime / this._config.operationCount;
 
-    const totalBytes = this._config.entryCount * this._config.valueSizeBytes;
+    const totalBytes = this._config.operationCount * this._config.valueSizeBytes;
     const avgReadThroughputKbps = (totalBytes / 1000) / (cumulativeReadTime / 1000);
     const avgWriteThroughputKbps = (totalBytes / 1000) / (cumulativeWriteTime / 1000);
 
     const result: ILoadTestResult = {
       moduleId: this._storage.moduleId(),
-      entryCount: this._config.entryCount,
+      operationCount: this._config.operationCount,
       totalTimeMs,
       averageWriteTimeMs,
       averageReadTimeMs,

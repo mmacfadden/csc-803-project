@@ -1,5 +1,9 @@
 import {ILoadTestResult} from "./ILoadTestResult";
 
+/**
+ * A helper class that will generate a CSV file from the results of
+ * the load tester.
+ */
 export class CsvGenerator {
 
   /**
@@ -7,7 +11,7 @@ export class CsvGenerator {
    */
   public static HEADERS = [
     "Encryption Module",
-    "Entry Count",
+    "Operation Count",
     "Cumulative Time (ms)",
     "Average Read/Write Time (ms)",
     "Average Read Time (ms)",
@@ -16,6 +20,13 @@ export class CsvGenerator {
     "Average Write Throughput (kBps)",
   ];
 
+  /**
+   * Generates a CSV file from load testers results.
+   *
+   * @param results
+   *   The results of the load testing run.
+   * @returns A string representation of the CVS containing the restuls.
+   */
   public static generateCsv(results: ILoadTestResult[]): string {
     if (!Array.isArray(results)) {
       throw new Error("results must be an array");
@@ -25,7 +36,7 @@ export class CsvGenerator {
       .map(row => {
         const {
           moduleId,
-          entryCount,
+          operationCount,
           totalTimeMs,
           averageReadTimeMs,
           averageWriteTimeMs,
@@ -35,7 +46,7 @@ export class CsvGenerator {
         } = row
         return [
           moduleId,
-          entryCount,
+          operationCount,
           totalTimeMs,
           averageReadTimeMs,
           averageWriteTimeMs,

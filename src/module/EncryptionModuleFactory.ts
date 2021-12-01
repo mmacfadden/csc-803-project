@@ -1,6 +1,6 @@
 import {IEncryptionConfig} from "../config";
 import {
-  WebStorageEncryptionModule,
+  EncryptionModule,
   ModuleBlowfish,
   ModuleClearText,
   ModuleCryptoJsAes128,
@@ -27,7 +27,7 @@ export class EncryptionModuleFactory {
    *
    * @throws If the config.moduleId is not recognized.
    */
-  public static createModule(config: IEncryptionConfig): WebStorageEncryptionModule {
+  public static createModule(config: IEncryptionConfig): EncryptionModule {
     switch (config.moduleId) {
       case ModuleCryptoJsAes256.MODULE_ID:
         return new ModuleCryptoJsAes256(config.secret);

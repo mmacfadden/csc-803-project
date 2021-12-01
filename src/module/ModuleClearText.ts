@@ -1,9 +1,9 @@
-import {WebStorageEncryptionModule} from "./WebStorageEncryptionModule";
+import {EncryptionModule} from "./EncryptionModule";
 
 /**
  * A baseline module that doesn't encrypt / decrypt data.
  */
-export class ModuleClearText extends WebStorageEncryptionModule {
+export class ModuleClearText extends EncryptionModule {
   public static readonly MODULE_ID = "Clear Text Storage";
 
   /**

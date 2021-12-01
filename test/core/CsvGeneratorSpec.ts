@@ -15,7 +15,7 @@ describe('CsvGenerator', () => {
     it('Returns a string with the correct number of lines', () => {
       const row: ILoadTestResult = {
         moduleId: "id",
-        entryCount: 100,
+        operationCount: 100,
         totalTimeMs: 1,
         averageWriteTimeMs: 1,
         averageReadWriteTimeMs: 1,

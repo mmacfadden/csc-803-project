@@ -2,7 +2,7 @@
  * The base class of all Storage Encryption modules that facilitate
  * encrypted storage to the HTML5 WebStorage API.
  */
-export abstract class WebStorageEncryptionModule {
+export abstract class EncryptionModule {
   private readonly _id: string;
 
   /**

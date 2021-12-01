@@ -1,3 +1,9 @@
+//
+// This file provides typescript definitions for JavaScript libraries that
+// did not have them. The declarations only contain the methods that this
+// project uses.
+//
+
 declare module "triplesec" {
   export class Encryptor {
     constructor(args: { key: Buffer, rng?: any, version?: any })

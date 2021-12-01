@@ -1,9 +1,9 @@
-import {WebStorageEncryptionModule} from "./WebStorageEncryptionModule";
+import {EncryptionModule} from "./EncryptionModule";
 
 /**
  * An abstract base class for symmetric key encryption.
  */
-export abstract class SymmetricEncryptionBasedModule extends WebStorageEncryptionModule {
+export abstract class SymmetricEncryptionBasedModule extends EncryptionModule {
   /**
    * The symmetric encryption key.
    */
